@@ -1,19 +1,15 @@
+import 'package:app/ui/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:app/ui/utils/background.dart';
 
 class Initial extends StatelessWidget {
   const Initial({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[     
-        SvgPicture.asset(
-          'images/background.svg', 
-          fit: BoxFit.cover,
-          height: double.infinity,
-        ),
-        
+    return Background(
+      children: <Widget>[
         Column(
           children:  <Widget>[
             Row(
@@ -25,7 +21,7 @@ class Initial extends StatelessWidget {
                   ),
                   child:
                     SvgPicture.asset(
-                      'images/logo.svg', 
+                      'assets/images/logo.svg', 
                       fit: BoxFit.contain,
                       height: 40,
                     ),
@@ -48,7 +44,7 @@ class Initial extends StatelessWidget {
                           text: const TextSpan(
                             text: 'Salve',
                             style: TextStyle(
-                              color: Color(0xff5a56ff), 
+                              color: CustomColors.purple,
                               fontFamily: 'Roboto', 
                               fontWeight: FontWeight.w500, 
                               fontSize: 40
@@ -57,7 +53,7 @@ class Initial extends StatelessWidget {
                               TextSpan(
                                 text: ', ', 
                                 style: TextStyle(
-                                  color: Color(0xff393A42), 
+                                  color: CustomColors.grey, 
                                   fontFamily: 'Roboto', 
                                   fontWeight: FontWeight.w300, 
                                   fontSize: 40
@@ -66,7 +62,7 @@ class Initial extends StatelessWidget {
                               TextSpan(
                                 text: 'organize ',
                                 style: TextStyle(
-                                  color: Color(0xff5a56ff), 
+                                  color: CustomColors.purple, 
                                   fontFamily: 'Roboto', 
                                   fontWeight: FontWeight.w500, 
                                   fontSize: 40
@@ -75,7 +71,7 @@ class Initial extends StatelessWidget {
                               TextSpan(
                                 text: 'e',
                                 style: TextStyle(
-                                  color: Color(0xff393A42), 
+                                  color: CustomColors.grey,
                                   fontFamily: 'Roboto', 
                                   fontWeight: FontWeight.w300, 
                                   fontSize: 40
@@ -84,7 +80,7 @@ class Initial extends StatelessWidget {
                               TextSpan(
                                 text: ' compartilhe ',
                                 style: TextStyle(
-                                  color: Color(0xff5a56ff), 
+                                  color: CustomColors.purple, 
                                   fontFamily: 'Roboto', 
                                   fontWeight: FontWeight.w500, 
                                   fontSize: 40
@@ -93,7 +89,7 @@ class Initial extends StatelessWidget {
                               TextSpan(
                                 text: 'seus links favoritos.',
                                 style: TextStyle(
-                                  color: Color(0xff393A42), 
+                                  color: CustomColors.grey, 
                                   fontFamily: 'Roboto', 
                                   fontWeight: FontWeight.w300, 
                                   fontSize: 40
@@ -119,7 +115,7 @@ class Initial extends StatelessWidget {
                         "Entre", 
                         style: 
                           TextStyle(
-                            color: Color(0xff5a56ff), 
+                            color: CustomColors.purple,
                             fontWeight: FontWeight.w500, 
                             fontSize: 16
                           )
@@ -127,11 +123,11 @@ class Initial extends StatelessWidget {
                       style:  
                         ButtonStyle(
                           backgroundColor: MaterialStateProperty.resolveWith((_) { 
-                            return const Color(0xffeceffd);
+                            return CustomColors.purple[50];
                           }),
                           side: MaterialStateProperty.resolveWith((_) {
                             return const BorderSide(
-                              color: Color(0xff5a56ff),
+                              color: CustomColors.purple,
                               width: 1
                             );
                           }),
@@ -164,7 +160,7 @@ class Initial extends StatelessWidget {
                       text: 'ou ',
                       style: 
                         TextStyle(
-                          color: Color(0xff393A42), 
+                          color: CustomColors.grey, 
                           fontFamily: 'Roboto', 
                           fontWeight: FontWeight.w300, 
                           fontSize: 16
@@ -173,7 +169,7 @@ class Initial extends StatelessWidget {
                         TextSpan(
                           text: 'Cadastre-se', 
                           style: TextStyle(
-                            color: Color(0xff393A42), 
+                            color: CustomColors.grey, 
                             fontFamily: 'Roboto', 
                             fontWeight: FontWeight.bold,
                              fontSize: 16
