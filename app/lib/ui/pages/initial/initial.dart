@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/login/login.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,7 +12,7 @@ class Initial extends StatelessWidget {
     return Background(
       children: <Widget>[
         Column(
-          children:  <Widget>[
+          children: <Widget>[
             Row(
               children: <Widget>[
                 Padding(
@@ -110,7 +111,10 @@ class Initial extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 40),
                   child: 
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => const Login()));
+                      },
                       child: const Text(
                         "Entre", 
                         style: 
