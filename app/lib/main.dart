@@ -23,11 +23,16 @@ class MyApp extends StatelessWidget {
           primaryColor: CustomColors.purple,
           focusColor: CustomColors.purple,
           inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(
+              fontSize: 14,
+              color: CustomColors.grey[300]
+            ),
+            filled: true,
             fillColor: CustomColors.grey[50],
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: CustomColors.purple),
-            ), 
+            ),
           )
         ),
       ),

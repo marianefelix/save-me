@@ -1,4 +1,7 @@
 import 'package:app/ui/utils/custom_colors.dart';
+import 'package:app/ui/utils/form/password_field.dart';
+import 'package:app/ui/utils/form/primary_button.dart';
+import 'package:app/ui/utils/form/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,12 +25,10 @@ class _LoginState extends State<Login> {
   bool _isPaswordEmpty = true;
   bool _isEmailFieldFocused = false;
   bool _isPaswordFieldFocused = false;
-  bool _isHiddenPassword = true;
+  bool _isPasswordHidden = true;
+  String _errorMessage = '';
 
-
-
-  final _formKey = GlobalKey<FormState>();
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _LoginState extends State<Login> {
     _isPaswordFieldFocused = false;
     _isEmailEmpty = true;
     _isPaswordEmpty = true;
-    _isHiddenPassword = true;
+    _isPasswordHidden = true;
     super.dispose();
   }
 
@@ -77,6 +78,7 @@ class _LoginState extends State<Login> {
             ),
           ],
         ),
+
         SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -89,48 +91,30 @@ class _LoginState extends State<Login> {
                 children: [
                   const SizedBox(height: 30),
 
-                  TextFormField(
+                  CustomTextField(
                     controller: emailController,
-                    focusNode: _emailFocusNode,
-                    onTap: () {
-                      setState(() {
-                        _isEmailFieldFocused = true;
-                        _isPaswordFieldFocused = false;
-                      });
-                    },
+                    inputType: TextInputType.emailAddress,
+                    labelText: "Email",
+                    hintText: "nome@exemplo.com",
+                    icon: Icons.email_outlined, 
+                    isEmpty: _isEmailEmpty,
                     onChanged: (value) {
                       setState(() {
                         _isEmailEmpty = value.isEmpty;
                       });
                     },
-                    keyboardType: TextInputType.emailAddress,
-                    cursorColor: CustomColors.purple,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      hintText: "nome@exemplo.com",
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: _isEmailEmpty
-                            ? CustomColors.grey[200]!
-                            : CustomColors.purple
-                        ),
-                      ), 
-                      prefixIcon: Icon(
-                        Icons.email_outlined,
-                        color: _isEmailFieldFocused || !_isEmailEmpty 
-                          ? CustomColors.purple 
-                          : CustomColors.grey[300]
-                      )
-                    ),
                   ),
 
                   const SizedBox(height: 15),
 
-                  TextFormField(
-                    obscureText: _isHiddenPassword,
+                  PasswordField(
+                    obscureText: _isPasswordHidden,
                     controller: passwordController,
+                    focusNode: _passwordFocusNode,
+                    hasFocus: _isPaswordFieldFocused,
+                    isPasswordHidden: _isPasswordHidden,
+                    isEmpty: _isPaswordEmpty,
+                    suffixIconOnTap: togglePasswodView,
                     onTap: () {
                       setState(() {
                         _isEmailFieldFocused = false;
@@ -142,69 +126,13 @@ class _LoginState extends State<Login> {
                         _isPaswordEmpty = value.isEmpty;
                       });
                     },
-                    focusNode: _passwordFocusNode,
-                    cursorColor: CustomColors.purple,
-                    decoration: InputDecoration(
-                      labelText: "Senha",
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: _isPaswordEmpty
-                            ? CustomColors.grey[200]!
-                            : CustomColors.purple
-                        ),
-                      ), 
-                      prefixIcon: Icon(
-                        Icons.lock_outline, 
-                        color:  _isPaswordFieldFocused || !_isPaswordEmpty 
-                          ? CustomColors.purple 
-                          : CustomColors.grey[300]
-                      ),
-                      suffixIcon: _isPaswordFieldFocused && !_isPaswordEmpty 
-                        ? GestureDetector(
-                          onTap: () {
-                            togglePasswodView();
-                          },
-                          child: Icon(
-                            _isHiddenPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                            color: CustomColors.grey[300]
-                          ),
-                        )
-                      : null
-                    ),
                   ),
 
                   const SizedBox(height: 30),
 
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 18.0),
-                        child: Text(
-                          "Entrar",
-                          style: TextStyle(
-                            color: CustomColors.white,
-                            fontWeight: FontWeight.w500, 
-                            fontSize: 16
-                          ),
-                        ),
-                      ),
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith((_) { 
-                          return CustomColors.purple;
-                        }),
-                        shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
-                          return RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)
-                          );
-                        }),
-                      ),
-                    ),
+                  PrimaryButton(
+                    label: "Entrar",
+                    onPressed: loginAction,
                   ),
 
                   Row(
@@ -249,8 +177,58 @@ class _LoginState extends State<Login> {
 
   void togglePasswodView() {
     setState(() {
-      _isHiddenPassword = !_isHiddenPassword;
+      _isPasswordHidden = !_isPasswordHidden;
     });
   }
 
+  void loginAction() {
+    if (!isFormValidate()) {
+      FocusScope.of(context).unfocus();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_errorMessage),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
+          //width: 200.0,
+          action: SnackBarAction(
+            textColor: CustomColors.white,
+            label: 'Fechar',
+            onPressed: () {},
+          ),
+        ),
+      );
+    }
+  }
+
+  bool isFormValidate() {
+    if (emailController.text.isEmpty && passwordController.text.isEmpty) { 
+      setState(() {
+        _errorMessage = 'Digite seu email e senha!';
+      });
+
+      return false;
+    }
+
+    if (emailController.text.isEmpty) { 
+      setState(() {
+        _errorMessage = 'Digite seu email!';
+      });
+
+      return false;
+    }
+
+    if (passwordController.text.isEmpty) { 
+      setState(() {
+        _errorMessage = 'Digite sua senha!';
+      });
+
+      return false;
+    }
+
+    setState(() {
+      _errorMessage = '';
+    });
+
+    return true;
+  }
 }
