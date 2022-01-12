@@ -1,3 +1,4 @@
+import 'package:app/ui/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'ui/pages/initial/initial.dart';
 
@@ -15,10 +16,20 @@ class MyApp extends StatelessWidget {
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: const MaterialApp(
+      child:  MaterialApp(
         title: "saveMe",
-        home: Initial(),
-        
+        home: const Initial(),
+        theme: ThemeData(
+          primaryColor: CustomColors.purple,
+          focusColor: CustomColors.purple,
+          inputDecorationTheme: InputDecorationTheme(
+            fillColor: CustomColors.grey[50],
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: CustomColors.purple),
+            ), 
+          )
+        ),
       ),
     );
     
