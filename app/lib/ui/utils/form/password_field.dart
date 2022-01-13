@@ -11,7 +11,9 @@ class PasswordField extends StatelessWidget {
     required this.hasFocus, 
     required this.suffixIconOnTap,
     required this.isPasswordHidden,
+    required this.hasError,
     this.focusNode,
+    this.labelText,
     this.onTap,
     this.onChanged,
   }) : super(key: key);
@@ -22,6 +24,8 @@ class PasswordField extends StatelessWidget {
   final bool hasFocus;
   final bool isPasswordHidden;
   final FocusNode? focusNode;
+  final String? labelText;
+  final bool hasError;
   final void Function()? onTap;
   final void Function(String)? onChanged;
   final void Function() suffixIconOnTap;
@@ -37,13 +41,15 @@ class PasswordField extends StatelessWidget {
         focusNode: focusNode,
         cursorColor: CustomColors.purple,
         decoration: InputDecoration(
-          labelText: "Senha",
+          labelText: labelText,
           floatingLabelBehavior: FloatingLabelBehavior.never,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: isEmpty
-                ? CustomColors.grey[200]! 
+              color: hasError
+                ? Colors.red 
+                : isEmpty
+                ? CustomColors.grey[200]!  
                 : CustomColors.purple
             ),
           ), 

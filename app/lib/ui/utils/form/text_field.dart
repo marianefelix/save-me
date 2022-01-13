@@ -11,7 +11,8 @@ class CustomTextField extends StatelessWidget {
     this.inputType, 
     this.hintText, 
     this.onChanged,
-    required this.isEmpty
+    required this.isEmpty, 
+    required this.hasError,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -21,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final String? hintText;
   final bool isEmpty;
   final void Function(String)? onChanged;
+  final bool hasError;
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +39,13 @@ class CustomTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: isEmpty
-                ? CustomColors.grey[200]! 
+              color: hasError
+                ? Colors.red 
+                : isEmpty
+                ? CustomColors.grey[200]!  
                 : CustomColors.purple
             ),
-          ), 
+          ),
           prefixIcon: Icon(
             icon,
             color: CustomColors.grey[300]

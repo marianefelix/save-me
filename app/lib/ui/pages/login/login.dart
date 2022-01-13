@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/register/registration.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/form/password_field.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
@@ -23,22 +24,18 @@ class _LoginState extends State<Login> {
 
   bool _isEmailEmpty = true;
   bool _isPaswordEmpty = true;
-  bool _isEmailFieldFocused = false;
   bool _isPaswordFieldFocused = false;
   bool _isPasswordHidden = true;
   String _errorMessage = '';
+  bool _hasEmailError = false;
+  bool _hasPasswordError = false;
+
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    _emailFocusNode.addListener(() {
-      setState(() {
-        _isEmailFieldFocused = _emailFocusNode.hasFocus;
-      });
-    });
-
     _passwordFocusNode.addListener(() {
       setState(() {
         _isPaswordFieldFocused = _passwordFocusNode.hasFocus;
@@ -48,18 +45,26 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    emailController.dispose();
-    passwordController.dispose();
+    super.dispose();
+    clearState();
+  }
+
+  void clearState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
-    _isEmailFieldFocused = false;
-    _isPaswordFieldFocused = false;
+
     _isEmailEmpty = true;
+
+    _isPaswordFieldFocused = false;
     _isPaswordEmpty = true;
     _isPasswordHidden = true;
-    super.dispose();
+
+    _errorMessage = '';
+    _hasEmailError = false;
+    _hasPasswordError = false;
   }
 
   @override
@@ -98,6 +103,7 @@ class _LoginState extends State<Login> {
                     hintText: "nome@exemplo.com",
                     icon: Icons.email_outlined, 
                     isEmpty: _isEmailEmpty,
+                    hasError: _hasEmailError,
                     onChanged: (value) {
                       setState(() {
                         _isEmailEmpty = value.isEmpty;
@@ -108,6 +114,7 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 15),
 
                   PasswordField(
+                    labelText: "Senha",
                     obscureText: _isPasswordHidden,
                     controller: passwordController,
                     focusNode: _passwordFocusNode,
@@ -115,9 +122,9 @@ class _LoginState extends State<Login> {
                     isPasswordHidden: _isPasswordHidden,
                     isEmpty: _isPaswordEmpty,
                     suffixIconOnTap: togglePasswodView,
+                    hasError: _hasPasswordError,
                     onTap: () {
                       setState(() {
-                        _isEmailFieldFocused = false;
                         _isPaswordFieldFocused = true;
                       });
                     },
@@ -139,7 +146,10 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => const Registration()));
+                        },
                         child: RichText(
                           text: const TextSpan(
                             text: 'Não tem uma conta? ',
@@ -148,7 +158,7 @@ class _LoginState extends State<Login> {
                                 color: CustomColors.grey, 
                                 fontFamily: 'Roboto', 
                                 fontWeight: FontWeight.w300, 
-                                fontSize: 16
+                                fontSize: 14
                               ),
                             children: <TextSpan>[
                               TextSpan(
@@ -157,7 +167,7 @@ class _LoginState extends State<Login> {
                                   color: CustomColors.grey, 
                                   fontFamily: 'Roboto', 
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16
+                                  fontSize: 14
                                 ),
                               ),
                             ],
@@ -182,14 +192,15 @@ class _LoginState extends State<Login> {
   }
 
   void loginAction() {
-    if (!isFormValidate()) {
-      FocusScope.of(context).unfocus();
+    FocusScope.of(context).unfocus();
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+    if (!isFormValid()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_errorMessage),
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
-          //width: 200.0,
           action: SnackBarAction(
             textColor: CustomColors.white,
             label: 'Fechar',
@@ -200,26 +211,12 @@ class _LoginState extends State<Login> {
     }
   }
 
-  bool isFormValidate() {
-    if (emailController.text.isEmpty && passwordController.text.isEmpty) { 
+  bool isFormValid() {
+    if (_isEmailEmpty && _isPaswordEmpty) {
       setState(() {
         _errorMessage = 'Digite seu email e senha!';
-      });
-
-      return false;
-    }
-
-    if (emailController.text.isEmpty) { 
-      setState(() {
-        _errorMessage = 'Digite seu email!';
-      });
-
-      return false;
-    }
-
-    if (passwordController.text.isEmpty) { 
-      setState(() {
-        _errorMessage = 'Digite sua senha!';
+        _hasEmailError = true;
+        _hasPasswordError = true;
       });
 
       return false;
@@ -227,6 +224,32 @@ class _LoginState extends State<Login> {
 
     setState(() {
       _errorMessage = '';
+    });
+
+    if (_isEmailEmpty) {
+      setState(() {
+        _errorMessage = 'Digite seu email!';
+        _hasEmailError = true;
+      });
+
+      return false;
+    }
+
+    setState(() {
+      _hasEmailError = false;
+    });
+
+    if (_isPaswordEmpty) {
+      setState(() {
+        _errorMessage = 'Digite sua senha!';
+        _hasPasswordError = true;
+      });
+
+      return false;
+    }
+
+    setState(() {
+      _hasPasswordError = false;
     });
 
     return true;
