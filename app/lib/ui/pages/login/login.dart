@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/home/home.dart';
 import 'package:app/ui/pages/register/registration.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/form/password_field.dart';
@@ -46,6 +47,7 @@ class _LoginState extends State<Login> {
   @override
   void dispose() {
     super.dispose();
+
     clearState();
   }
 
@@ -208,6 +210,9 @@ class _LoginState extends State<Login> {
           ),
         ),
       );
+    } else {
+      Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context) => const Home()));
     }
   }
 
