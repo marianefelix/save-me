@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/ui/utils/background.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController(); 
+  TextEditingController passwordController = TextEditingController();
 
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
@@ -30,7 +31,6 @@ class _LoginState extends State<Login> {
   String _errorMessage = '';
   bool _hasEmailError = false;
   bool _hasPasswordError = false;
-
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -79,13 +79,12 @@ class _LoginState extends State<Login> {
             Padding(
               padding: const EdgeInsets.only(top: 165.0),
               child: SvgPicture.asset(
-                'assets/images/logo_2.svg', 
+                'assets/images/logo_2.svg',
                 fit: BoxFit.contain,
               ),
             ),
           ],
         ),
-
         SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
@@ -97,13 +96,12 @@ class _LoginState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 30),
-
                   CustomTextField(
                     controller: emailController,
                     inputType: TextInputType.emailAddress,
                     labelText: "Email",
                     hintText: "nome@exemplo.com",
-                    icon: Icons.email_outlined, 
+                    icon: Icons.email_outlined,
                     isEmpty: _isEmailEmpty,
                     hasError: _hasEmailError,
                     onChanged: (value) {
@@ -112,9 +110,7 @@ class _LoginState extends State<Login> {
                       });
                     },
                   ),
-
                   const SizedBox(height: 15),
-
                   PasswordField(
                     labelText: "Senha",
                     obscureText: _isPasswordHidden,
@@ -136,41 +132,40 @@ class _LoginState extends State<Login> {
                       });
                     },
                   ),
-
                   const SizedBox(height: 30),
-
                   PrimaryButton(
                     label: "Entrar",
-                    onPressed: loginAction,
+                    onPressed: () {
+                      loginAction();
+                      login();
+                    },
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const Registration()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Registration()));
                         },
                         child: RichText(
                           text: const TextSpan(
                             text: 'Não tem uma conta? ',
-                            style: 
-                              TextStyle(
-                                color: CustomColors.grey, 
-                                fontFamily: 'Roboto', 
-                                fontWeight: FontWeight.w300, 
-                                fontSize: 14
-                              ),
+                            style: TextStyle(
+                                color: CustomColors.grey,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.w300,
+                                fontSize: 14),
                             children: <TextSpan>[
                               TextSpan(
-                                text: 'Cadastre-se', 
+                                text: 'Cadastre-se',
                                 style: TextStyle(
-                                  color: CustomColors.grey, 
-                                  fontFamily: 'Roboto', 
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14
-                                ),
+                                    color: CustomColors.grey,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
                               ),
                             ],
                           ),
@@ -211,8 +206,7 @@ class _LoginState extends State<Login> {
         ),
       );
     } else {
-      Navigator.pushReplacement(context,
-      MaterialPageRoute(builder: (context) => const Home()));
+      login();
     }
   }
 
@@ -258,5 +252,34 @@ class _LoginState extends State<Login> {
     });
 
     return true;
+  }
+
+  login() async {
+    var bodyParse = {
+      "email": emailController.text,
+      "password": passwordController.text
+    };
+
+    Uri url = Uri.parse('http://192.168.1.225:3333/user/login');
+    http.Response response = await http.post(url,
+        headers: {'Accept': 'application/json'}, body: bodyParse);
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const Home()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Falha na autenticação. Usuário ou senha inválidos!"),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
+          action: SnackBarAction(
+            textColor: CustomColors.white,
+            label: 'Fechar',
+            onPressed: () {},
+          ),
+        ),
+      );
+    }
   }
 }
