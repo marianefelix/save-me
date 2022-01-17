@@ -32,7 +32,8 @@ class CustomColors {
       200: Color(0xFFAAB2C5),
       300: Color(0xFF8F8E94),
       400: Color(0xFF4F5159),
-      500: Color(_greyPrimaryValue),
+      500: Color(0xFF393A42),
+      600: Color(_greyPrimaryValue),
     },
   );
 }
