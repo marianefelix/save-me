@@ -7,12 +7,13 @@ class CustomTextField extends StatelessWidget {
     Key? key, 
     required this.controller, 
     required this.icon,
+    required this.isEmpty, 
+    required this.hasError, 
     this.labelText, 
     this.inputType, 
-    this.hintText, 
+    this.hintText,
+    this.contentPadding,
     this.onChanged,
-    required this.isEmpty, 
-    required this.hasError,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -23,6 +24,7 @@ class CustomTextField extends StatelessWidget {
   final bool isEmpty;
   final void Function(String)? onChanged;
   final bool hasError;
+  final EdgeInsetsGeometry? contentPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           labelText: labelText,
           hintText: hintText,
+          contentPadding: contentPadding,
           floatingLabelBehavior: FloatingLabelBehavior.never,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
