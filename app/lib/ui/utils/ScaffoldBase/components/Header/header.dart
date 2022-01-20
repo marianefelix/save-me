@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/profile/profile.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/form/text_field.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,10 @@ class Header extends StatelessWidget {
               ),
 
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Profile()));
+                },
                 child: const Text(
                   "M", 
                   style: TextStyle(
