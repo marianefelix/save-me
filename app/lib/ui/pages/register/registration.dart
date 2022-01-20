@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/form/password_field.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
 import 'package:app/ui/utils/form/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -13,7 +17,6 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -41,7 +44,6 @@ class _RegistrationState extends State<Registration> {
   String _errorMessage = '';
   String _emailErrorMessage = '';
   String _passwordErrorMessage = '';
-
 
   @override
   void initState() {
@@ -97,19 +99,16 @@ class _RegistrationState extends State<Registration> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 70, left: 30),
               child: SvgPicture.asset(
-                'assets/images/logo.svg', 
+                'assets/images/logo.svg',
                 fit: BoxFit.contain,
                 height: 40,
               ),
             ),
-      
             const SizedBox(height: 35.0),
-            
             const Padding(
               padding: EdgeInsets.only(left: 30),
               child: Text(
@@ -120,17 +119,15 @@ class _RegistrationState extends State<Registration> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-            ), 
-      
+            ),
             const SizedBox(height: 30),
-      
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: CustomTextField(
                 controller: nameController,
                 inputType: TextInputType.text,
                 labelText: "Nome",
-                icon: Icons.person_outline_outlined, 
+                icon: Icons.person_outline_outlined,
                 isEmpty: _isNameEmpty,
                 hasError: _hasNameError,
                 onChanged: (value) {
@@ -140,9 +137,7 @@ class _RegistrationState extends State<Registration> {
                 },
               ),
             ),
-      
             const SizedBox(height: 15),
-      
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: CustomTextField(
@@ -150,7 +145,7 @@ class _RegistrationState extends State<Registration> {
                 inputType: TextInputType.emailAddress,
                 labelText: "Email",
                 hintText: "nome@exemplo.com",
-                icon: Icons.email_outlined, 
+                icon: Icons.email_outlined,
                 isEmpty: _isEmailEmpty,
                 hasError: _hasEmailError,
                 onChanged: (value) {
@@ -160,9 +155,7 @@ class _RegistrationState extends State<Registration> {
                 },
               ),
             ),
-      
             const SizedBox(height: 15),
-      
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: PasswordField(
@@ -187,9 +180,7 @@ class _RegistrationState extends State<Registration> {
                 },
               ),
             ),
-      
             const SizedBox(height: 15),
-      
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: PasswordField(
@@ -214,19 +205,17 @@ class _RegistrationState extends State<Registration> {
                 },
               ),
             ),
-      
             const SizedBox(height: 30),
-      
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: PrimaryButton(
                 label: "Cadastrar",
                 onPressed: () {
                   registrationAction();
+                  createUser();
                 },
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: TextButton(
@@ -236,11 +225,10 @@ class _RegistrationState extends State<Registration> {
                 child: const Text(
                   "Voltar",
                   style: TextStyle(
-                    color: CustomColors.grey, 
-                    fontFamily: 'Roboto', 
-                    fontWeight: FontWeight.w300, 
-                    fontSize: 14
-                  ),
+                      color: CustomColors.grey,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w300,
+                      fontSize: 14),
                 ),
               ),
             ),
@@ -417,5 +405,19 @@ class _RegistrationState extends State<Registration> {
         ),
       );
     }
+  }
+
+  createUser() async {
+    var bodyParse = {
+      "name": nameController.text,
+      "email": emailController.text,
+      "password": passwordController.text
+    };
+
+    Uri url = Uri.parse('http://192.168.1.225:3333/user');
+    http.Response response = await http.post(url,
+        headers: {'Accept': 'application/json'}, body: bodyParse);
+
+    print(response);
   }
 }
