@@ -4,9 +4,8 @@ module.exports = {
     id: { type: "integer" },
     name: { type: "string" },
     email: { type: "string", format: "email" },
-    user: { type: "string" },
-    password: { type: "string" }
+    password: { type: "string" },
   },
-  required: ["name", "email", "user", "password"],
+  required: ["name", "email", "password"],
   additionalProperties: false,
-}
+};

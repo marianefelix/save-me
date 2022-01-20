@@ -3,9 +3,7 @@ module.exports = {
   properties: {
     id: { type: "integer" },
     title: { type: "string" },
-    color: { type: "string" },
-
   },
-  required: ["title", "color"],
+  required: ["title"],
   additionalProperties: false,
-}
+};

@@ -1,19 +1,12 @@
-const Ajv = require('ajv');
+const Ajv = require("ajv");
 const ajv = new Ajv();
-const categorySchema = require('../schema/schema.category');
+const categorySchema = require("../schema/schema.category");
 
 function validarCategoria(request, response, next) {
-
-  const {
-
-    title,
-    color
-
-  }= request.body;
+  const { title } = request.body;
 
   const categoryInsert = {
     title,
-    color
   };
 
   const validate = ajv.compile(categorySchema);
@@ -22,7 +15,9 @@ function validarCategoria(request, response, next) {
   if (valid) {
     next();
   } else {
-    response.status(400).json({ msg: "Dados inválidos", erros: validate.errors });
+    response
+      .status(400)
+      .json({ msg: "Dados inválidos", erros: validate.errors });
   }
 }
 
