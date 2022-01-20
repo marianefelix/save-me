@@ -137,7 +137,6 @@ class _LoginState extends State<Login> {
                     label: "Entrar",
                     onPressed: () {
                       loginAction();
-                      login();
                     },
                   ),
                   Row(
@@ -206,7 +205,9 @@ class _LoginState extends State<Login> {
         ),
       );
     } else {
-      login();
+      Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => const Home()));
+      //login();
     }
   }
 
@@ -270,7 +271,7 @@ class _LoginState extends State<Login> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Falha na autenticação. Usuário ou senha inválidos!"),
+          content: const Text("Falha na autenticação. Usuário ou senha inválidos!"),
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
           action: SnackBarAction(

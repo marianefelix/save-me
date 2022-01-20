@@ -16,19 +16,38 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
 
-  List<String> categories = [
-    'Design',
-    'Inspirações',
-    'Teste',
-    'Teste 1',
-    'Teste 2',
-    'Teste 3',
-    'Teste 4',
-    'Teste 5',
-    'Teste 6',
-    'Teste 7',
-    'Teste 8',
-    'Teste 9',
+  Map<int, String> categories = {
+    1: 'Design',
+    2: 'Inspirações',
+    3: 'Teste',
+    4: 'Teste 1',
+    5: 'Teste 2',
+    6: 'Teste 3',
+    7: 'Teste 4',
+    8: 'Teste 5',
+    9: 'Teste 6',
+    10: 'Teste 7',
+    11: 'Teste 8',
+    12: 'Teste 9',
+  };
+
+  List<Object> links = [
+    {
+      "link": "link teste",
+      "category_id": 1,
+    },
+    {
+      "link": "link teste 1",
+      "category_id": 1,
+    },
+    {
+      "link": "link teste 1",
+      "category_id": 1,
+    },
+    {
+      "link": "link teste 1",
+      "category_id": 1,
+    },
   ];
 
   bool isGrid = true;
@@ -56,7 +75,7 @@ class _HomeState extends State<Home> {
               isGrid: isGrid,
             ),
 
-            CustomList(categories: categories, isGrid: isGrid),
+            CustomList(categories: categories, isGrid: isGrid, links: links),
             //EmptyState()
           ],
         ),
