@@ -19,7 +19,6 @@ class CustomList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 1,
       child: isGrid 
       ? GridView.builder(
         padding: const EdgeInsets.only(top: 20, bottom: 20),
@@ -41,7 +40,8 @@ class CustomList extends StatelessWidget {
             children: [
               CustomCard(
                 isGrid: isGrid, 
-                title: categoryItem.title, 
+                title: categoryItem.title,
+                onTap: onTap,
                 shareOnPressed: () async {
                   shareCatagory(categoryItem.title, categoryLinks);
                 }
@@ -64,6 +64,7 @@ class CustomList extends StatelessWidget {
             return CustomCard(
               isGrid: isGrid, 
               title: categoryItem.title,
+              onTap: onTap,
               shareOnPressed: () async {
                 shareCatagory(categoryItem.title, categoryLinks);
               }
@@ -73,7 +74,7 @@ class CustomList extends StatelessWidget {
     );
   }
 
-  Future<void> shareCatagory( String categoryTitle, List<Link> categoryLinks,) async {
+  Future<void> shareCatagory(String categoryTitle, List<Link> categoryLinks,) async {
     var linksToShare = StringBuffer();
 
     linksToShare.write(categoryTitle + '\n');
@@ -84,4 +85,6 @@ class CustomList extends StatelessWidget {
 
     Share.share(linksToShare.toString());
   }
+
+  void onTap() {}
 }
