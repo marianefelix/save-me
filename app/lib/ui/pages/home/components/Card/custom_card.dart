@@ -22,7 +22,7 @@ class CustomCard extends StatelessWidget {
       child: Stack(
         children: [
           SizedBox(
-            width: isGrid ? 137 : MediaQuery.of(context).size.width,
+            width: isGrid ? 150 : MediaQuery.of(context).size.width * 0.83,
             height: 98,
             child: Card(
               elevation: 1,
@@ -31,19 +31,32 @@ class CustomCard extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: IconButton(
-                splashRadius: 20,
-                onPressed: shareOnPressed,
-                alignment: Alignment.topRight,
-                icon: Icon(
-                  Icons.share_outlined,
-                  color: CustomColors.grey[500]!.withOpacity(0.8),
+            ),
+          ),
+
+          Positioned(
+            top: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 5, top: 5),
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: IconButton(
+                  splashRadius: 20,
+                  onPressed: shareOnPressed,
+                  alignment: Alignment.topRight,
+                  icon: Icon(
+                    Icons.share_outlined,
+                    color: CustomColors.grey[500]!.withOpacity(0.8),
+                  ),
                 ),
               ),
             ),
           ),
+
           Positioned(
-            width: isGrid ? 137 : MediaQuery.of(context).size.width/1.215, // rever
+            width: isGrid ? 150 : MediaQuery.of(context).size.width * 0.83,
             height: 40,
             bottom: 0,
             child: Card(
@@ -66,13 +79,16 @@ class CustomCard extends StatelessWidget {
                         color: CustomColors.purple.withOpacity(0.5)
                       ),
                     ),
-                    Text(
-                      title, 
-                      style: TextStyle(
-                        color: CustomColors.purple.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      )
+                    Expanded(
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: CustomColors.purple.withOpacity(0.8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )
+                      ),
                     ),
                   ],
                 ),
