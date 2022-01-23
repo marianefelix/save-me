@@ -66,13 +66,16 @@ class CustomCard extends StatelessWidget {
                         color: CustomColors.purple.withOpacity(0.5)
                       ),
                     ),
-                    Text(
-                      title, 
-                      style: TextStyle(
-                        color: CustomColors.purple.withOpacity(0.8),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      )
+                    Expanded(
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: CustomColors.purple.withOpacity(0.8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )
+                      ),
                     ),
                   ],
                 ),

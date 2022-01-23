@@ -1,3 +1,5 @@
+import 'package:app/model/category.dart';
+import 'package:app/model/link.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/SortRow/sort_row.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
@@ -16,42 +18,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
 
-  Map<int, String> categories = {
-    1: 'Design',
-    2: 'Inspirações',
-    3: 'Teste',
-    4: 'Teste 1',
-    5: 'Teste 2',
-    6: 'Teste 3',
-    7: 'Teste 4',
-    8: 'Teste 5',
-    9: 'Teste 6',
-    10: 'Teste 7',
-    11: 'Teste 8',
-    12: 'Teste 9',
-  };
-
-  List<Object> links = [
-    {
-      "link": "link teste",
-      "category_id": 1,
-    },
-    {
-      "link": "link teste 1",
-      "category_id": 1,
-    },
-    {
-      "link": "link teste 1",
-      "category_id": 1,
-    },
-    {
-      "link": "link teste 1",
-      "category_id": 1,
-    },
-  ];
+  List<Category> categoryList = [];
+  List<Link> linkList = [];
 
   bool isGrid = true;
   String selectedSortOption = 'date';
+
+  @override void initState() {
+    super.initState();
+
+    generateLinks();
+    generateCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +53,7 @@ class _HomeState extends State<Home> {
               isGrid: isGrid,
             ),
 
-            CustomList(categories: categories, isGrid: isGrid, links: links),
+            CustomList(categories: categoryList, links: linkList, isGrid: isGrid),
             //EmptyState()
           ],
         ),
@@ -181,5 +159,68 @@ class _HomeState extends State<Home> {
     });
 
     Navigator.pop(context);
+  }
+
+  void generateLinks() {
+    final linkJson = [
+      {
+        "id": 1,
+        "link": "https://teste.com",
+        "favorite": false,
+        "user_id": 1,
+        "category_id": 1
+      },
+      {
+        "id": 2,
+        "link": "https://teste2.com",
+        "favorite": false,
+        "user_id": 1,
+        "category_id": 1
+      },
+      {
+        "id": 3,
+        "link": "https://teste3.com",
+        "favorite": false,
+        "user_id": 1,
+        "category_id": 2
+      },
+    ];
+
+    for (var json in linkJson) {
+      final Link link = Link.fromJson(json);
+
+      linkList.add(link);
+    }
+  }
+
+  void generateCategories() {
+    final categoryJson = [
+      {
+        "id": 1,
+        "title": 'Design',
+      },
+      {
+        "id": 2,
+        "title": 'Inspirações',
+      },
+      {
+        "id": 3,
+        "title": 'Teste Categoria 1',
+      },
+      {
+        "id": 4,
+        "title": 'Teste Categoria 2',
+      },
+      {
+        "id": 5,
+        "title": 'Teste Categoria 3',
+      },
+    ];
+
+    for (var json in categoryJson) {
+      final Category category = Category.fromJson(json);
+
+      categoryList.add(category);
+    }
   }
 }

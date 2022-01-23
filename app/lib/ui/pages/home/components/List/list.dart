@@ -1,3 +1,5 @@
+import 'package:app/model/category.dart';
+import 'package:app/model/link.dart';
 import 'package:app/ui/pages/home/components/Card/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -10,8 +12,8 @@ class CustomList extends StatelessWidget {
     required this.isGrid,
   }) : super(key: key);
 
-  final Map<int, String> categories;
-  final List<Object> links;
+  final List<Category> categories;
+  final List<Link> links;
   final bool isGrid;
 
   @override
@@ -28,13 +30,22 @@ class CustomList extends StatelessWidget {
         ),
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          final id = index + 1;
-          final categorieItem = categories[id]!;
+          final categoryItem = categories[index];
+
+          final categoryLinks = links.where((linkItem) => 
+            linkItem.categoryId == categoryItem.id
+          ).toList();
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomCard(isGrid: isGrid, title: categorieItem, shareOnPressed: shareCatagory),
+              CustomCard(
+                isGrid: isGrid, 
+                title: categoryItem.title, 
+                shareOnPressed: () async {
+                  shareCatagory(categoryItem.title, categoryLinks);
+                }
+              ),
             ],
           );
         }
@@ -44,16 +55,33 @@ class CustomList extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20, bottom: 20),
           itemCount: categories.length,
           itemBuilder: (context, index) {
-          final id = index + 1;
-          final categorieItem = categories[id]!;
+            final categoryItem = categories[index];
 
-          return CustomCard(isGrid: isGrid, title: categorieItem, shareOnPressed: shareCatagory);
+            final categoryLinks = links.where((linkItem) => 
+              linkItem.categoryId == categoryItem.id
+            ).toList();
+
+            return CustomCard(
+              isGrid: isGrid, 
+              title: categoryItem.title,
+              shareOnPressed: () async {
+                shareCatagory(categoryItem.title, categoryLinks);
+              }
+            );
           }
         )
     );
   }
 
-  Future<void> shareCatagory() async {
-    Share.share("teste");
+  Future<void> shareCatagory( String categoryTitle, List<Link> categoryLinks,) async {
+    var linksToShare = StringBuffer();
+
+    linksToShare.write(categoryTitle + '\n');
+
+    for (var linkItem in categoryLinks) {
+      linksToShare.write(linkItem.link + '\n');
+    }
+
+    Share.share(linksToShare.toString());
   }
 }
