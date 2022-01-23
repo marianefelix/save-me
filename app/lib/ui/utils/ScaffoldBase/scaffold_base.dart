@@ -52,7 +52,9 @@ class ScaffoldBase extends StatelessWidget {
         width: 67,
         height: 67,
         child: FloatingActionButton(
-          onPressed: (){},
+          onPressed: (){
+            _addLinkModelBottom(context);
+          },
           backgroundColor: CustomColors.purple,
           child: const Icon(Icons.add_rounded, size: 35.0),
         ),
@@ -60,4 +62,37 @@ class ScaffoldBase extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+
+  void _addLinkModelBottom(context) {
+    showModalBottomSheet(context: context, builder: (BuildContext bc) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(10),
+            topRight: const Radius.circular(10)
+          )
+        ),
+        child: Padding(padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Text('Salvar Link'),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.cancel, color: Colors.purple, size: 25),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+        ),
+      );
+    });
+  }
+
 }

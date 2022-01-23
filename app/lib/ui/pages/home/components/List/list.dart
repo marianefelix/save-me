@@ -1,14 +1,17 @@
 import 'package:app/ui/pages/home/components/Card/custom_card.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class CustomList extends StatelessWidget {
   const CustomList({ 
     Key? key, 
     required this.categories,
+    required this.links,
     required this.isGrid,
   }) : super(key: key);
 
-  final List<String> categories;
+  final Map<int, String> categories;
+  final List<Object> links;
   final bool isGrid;
 
   @override
@@ -25,12 +28,13 @@ class CustomList extends StatelessWidget {
         ),
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          final categorieItem = categories[index];
+          final id = index + 1;
+          final categorieItem = categories[id]!;
+
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomCard(isGrid: isGrid, title: categorieItem,),
+              CustomCard(isGrid: isGrid, title: categorieItem, shareOnPressed: shareCatagory),
             ],
           );
         }
@@ -40,10 +44,16 @@ class CustomList extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20, bottom: 20),
           itemCount: categories.length,
           itemBuilder: (context, index) {
-            final categorieItem = categories[index];
-            return CustomCard(isGrid: isGrid, title: categorieItem);
+          final id = index + 1;
+          final categorieItem = categories[id]!;
+
+          return CustomCard(isGrid: isGrid, title: categorieItem, shareOnPressed: shareCatagory);
           }
         )
     );
+  }
+
+  Future<void> shareCatagory() async {
+    Share.share("teste");
   }
 }

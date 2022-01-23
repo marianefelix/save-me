@@ -6,13 +6,13 @@ class CustomCard extends StatelessWidget {
     Key? key, 
     required this.title,
     required this.isGrid,
-    this.shareOnPressed,
+    required this.shareOnPressed,
     this.onTap,
   }) : super(key: key);
 
   final String title;
   final bool isGrid;
-  final Function()? shareOnPressed;
+  final Future<void> Function() shareOnPressed;
   final Function()? onTap;
 
   @override
