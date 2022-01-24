@@ -6,25 +6,32 @@ class PrimaryButton extends StatelessWidget {
     Key? key, 
     required this.label, 
     required this.onPressed, 
-    
+    this.width,
+    this.verticalPadding, 
+    this.backgroundColor, 
+    this.textColor
   }) : super(key: key);
 
   final String label;
+  final double? width;
   final void Function()? onPressed;
+  final double? verticalPadding;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
     return (
       SizedBox(
-        width: MediaQuery.of(context).size.width,
+        width: width ?? MediaQuery.of(context).size.width,
         child: ElevatedButton(
           onPressed: onPressed,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18.0),
+            padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 18.0),
             child: Text(
               label,
-              style: const TextStyle(
-                color: CustomColors.white,
+              style: TextStyle(
+                color: textColor ?? CustomColors.white,
                 fontWeight: FontWeight.w500, 
                 fontSize: 16
               ),
@@ -32,7 +39,7 @@ class PrimaryButton extends StatelessWidget {
           ),
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith((_) { 
-              return CustomColors.purple;
+              return backgroundColor ?? CustomColors.purple;
             }),
             shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
               return RoundedRectangleBorder(

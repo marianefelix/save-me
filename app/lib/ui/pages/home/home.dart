@@ -22,19 +22,34 @@ class _HomeState extends State<Home> {
   List<Link> linkList = [];
 
   bool isGrid = true;
+  bool isSearchEmpty = true;
   String selectedSortOption = 'date';
 
   @override void initState() {
     super.initState();
+
+    print(searchController.text.isEmpty);
 
     generateLinks();
     generateCategories();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    clearState();
+  }
+
+  void clearState() {
+    searchController = TextEditingController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScaffoldBase(
       searchController: searchController,
+      searchOnChanged: searchOnChanged,
       bodyChild: Container(
         padding: const EdgeInsets.only(left: 35, right: 35),
         child: Column(
@@ -151,6 +166,12 @@ class _HomeState extends State<Home> {
         );
       },
     );
+  }
+
+  void searchOnChanged(String value) {
+    setState(() {
+      isSearchEmpty = value.isEmpty;
+    });
   }
 
   void handleSortOptionSelected(String orderOption) {

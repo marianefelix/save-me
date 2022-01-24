@@ -15,6 +15,10 @@ class _SaveLinkState extends State<SaveLink> {
   TextEditingController linkController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
 
+  bool _isTitleEmpty = true;
+  bool _isLinkEmpty = true;
+  bool _isCategoryEmpty = true;
+
 
   @override
   void initState() {
@@ -23,160 +27,163 @@ class _SaveLinkState extends State<SaveLink> {
 
   @override
   void dispose() {
+    super.dispose();
+
     titleController = TextEditingController();
     linkController = TextEditingController();
     categoryController = TextEditingController();
 
-    super.dispose();
+    _isTitleEmpty = true;
+    _isLinkEmpty = true;
+    _isCategoryEmpty = true;
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return BottomSheet(
-      onClosing: (){},
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0), 
-          topRight: Radius.circular(30.0)
-        ),
-      ),
-      backgroundColor: CustomColors.white,
-      builder: (context) {
-        return SizedBox(
-          //height: MediaQuery.of(context).size.height * 60,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    const Text(
-                      'Salvar Link', 
-                      style: TextStyle(
-                        fontSize: 25, 
-                        fontWeight: 
-                        FontWeight.w500
-                      )
-                    ),
-                  
-                    const Spacer(),
-                  
-                    IconButton(
-                      icon: Icon(
-                        Icons.close, 
-                        color: Colors.grey[500],
-                        size: 25
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                ),
-      
-                const SizedBox(height: 15),
-      
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: 
-                  Text(
-                    "Título:", 
-                    style: TextStyle(
-                    color: CustomColors.grey[500],
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    )
-                  ),
-                ),
-      
-                const SizedBox(height: 8),
-      
-                SizedBox(
-                  child: Column(children: [
-                    CustomTextField(
-                      controller: titleController,
-                      icon: Icons.title_outlined,
-                      labelText: "Digite o titulo",
-                      hintText: "Titulo do Link",
-                      isEmpty: titleController.text.isEmpty,
-                      hasError: false,
-                    ),
-                  ],)
-                ),
-      
-                const SizedBox(height: 15),
-                
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: 
-                  Text(
-                    "Link:", 
-                    style: TextStyle(
-                    color: CustomColors.grey[500],
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    )
-                  ),
-                ),
-        
-                const SizedBox(height: 8),
-        
-                SizedBox(
-                  child: Column(children: [
-                    CustomTextField(
-                      controller: linkController,
-                      icon: Icons.link_outlined,
-                      labelText: "http://link@example.com",
-                      hintText: "Link",
-                      isEmpty: linkController.text.isEmpty,
-                      hasError: false,
-                    ),
-                  ],)
-                ),
-        
-                const SizedBox(height: 15),
-        
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: 
-                  Text(
-                    "Categoria:", 
-                    style: TextStyle(
-                    color: CustomColors.grey[500],
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    )
-                  ),
-                ),
-      
-                const SizedBox(height: 8),
-      
-                SizedBox(
-                  child: Column(
-                    children: [
-                      CustomTextField(
-                        controller: categoryController,
-                        icon: Icons.search_outlined,
-                        labelText: "Digite a categoria",
-                        hintText: "Categoria",
-                        isEmpty: categoryController.text.isEmpty,
-                        hasError: false,
-                      ),
-                    ],
-                  ),
-                ),
-                
-                const SizedBox(height: 10),
-      
-                PrimaryButton(
-                  label: "Cadastrar",
-                  onPressed: () {},
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.85,
+      padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Text(
+                'Salvar link', 
+                style: TextStyle(
+                  color: CustomColors.grey[500],
+                  fontSize: 25, 
+                  fontWeight: FontWeight.w500
                 )
-              ],
+              ),
+            
+              const Spacer(),
+            
+              IconButton(
+                icon: Icon(
+                  Icons.close, 
+                  color: Colors.grey[500],
+                  size: 25
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+  
+          const SizedBox(height: 30),
+  
+          Text(
+            "Título:", 
+            style: TextStyle(
+            color: CustomColors.grey[500],
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            )
+          ),
+  
+          const SizedBox(height: 8),
+  
+          SizedBox(
+            height: 50,
+            child: CustomTextField(
+              controller: titleController,
+              contentPadding: EdgeInsets.zero,
+              icon: Icons.title_outlined,
+              labelText: "Digite o titulo",
+              isEmpty: _isTitleEmpty,
+              hasError: false,
+              onChanged: (value) {
+                setState(() {
+                  _isTitleEmpty = value.isEmpty;
+                });
+              },
+            )
+          ),
+  
+          const SizedBox(height: 15),
+          
+          Text(
+            "Link:", 
+            style: TextStyle(
+            color: CustomColors.grey[500],
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            )
+          ),
+    
+          const SizedBox(height: 8),
+    
+          SizedBox(
+            height: 50,
+            child: CustomTextField(
+              controller: linkController,
+              icon: Icons.link_outlined,
+              contentPadding: EdgeInsets.zero,
+              labelText: "http://link@example.com",
+              isEmpty: _isLinkEmpty,
+              hasError: false,
+              onChanged: (value) {
+                setState(() {
+                  _isLinkEmpty = value.isEmpty;
+                });
+              }
+            )
+          ),
+    
+          const SizedBox(height: 15),
+    
+          Text(
+            "Categoria:", 
+            style: TextStyle(
+            color: CustomColors.grey[500],
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            )
+          ),
+  
+          const SizedBox(height: 8),
+  
+          SizedBox(
+            height: 50,
+            child: CustomTextField(
+              controller: categoryController,
+              contentPadding: EdgeInsets.zero,
+              icon: Icons.search_outlined,
+              labelText: "Digite a categoria",
+              isEmpty: _isCategoryEmpty,
+              hasError: false,
+              onChanged: (value) {
+                setState(() {
+                  _isCategoryEmpty = value.isEmpty;
+                });
+              }
             ),
           ),
-        );
-      }
+          
+          const SizedBox(height: 50),
+  
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: PrimaryButton(
+                  label: "Confirmar",
+                  backgroundColor: _isLinkEmpty ? CustomColors.grey[100] : CustomColors.purple,
+                  textColor: _isLinkEmpty ? CustomColors.grey[300] : CustomColors.white,
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  verticalPadding: 13.0,
+                  onPressed: _isLinkEmpty ? null : () {},
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

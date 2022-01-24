@@ -8,10 +8,12 @@ class ScaffoldBase extends StatelessWidget {
     Key? key, 
     required this.bodyChild, 
     required this.searchController,
+    this.searchOnChanged,
   }) : super(key: key);
 
   final Widget bodyChild;
   final TextEditingController searchController;
+  final Function(String)? searchOnChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,10 @@ class ScaffoldBase extends StatelessWidget {
       backgroundColor: CustomColors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(90.0),
-        child: Header(searchController: searchController),
+        child: Header(
+          searchController: searchController, 
+          onChanged: searchOnChanged,
+        ),
       ),
       body: SafeArea(
         child: bodyChild,
@@ -53,7 +58,7 @@ class ScaffoldBase extends StatelessWidget {
         width: 67,
         height: 67,
         child: FloatingActionButton(
-          onPressed: (){
+          onPressed: () {
             _addLinkModelBottom(context);
           },
           backgroundColor: CustomColors.purple,
@@ -69,6 +74,7 @@ class ScaffoldBase extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30.0), 
@@ -76,10 +82,9 @@ class ScaffoldBase extends StatelessWidget {
         ),
       ),
       backgroundColor: CustomColors.white,
-      builder: (context) {
+      builder: (BuildContext bc) {
         return const SaveLink();
       }
     );
   }
-
 }
