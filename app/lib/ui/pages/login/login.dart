@@ -5,6 +5,7 @@ import 'package:app/ui/utils/form/password_field.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
 import 'package:app/ui/utils/form/text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/ui/utils/background.dart';
 import 'package:http/http.dart' as http;
@@ -136,7 +137,6 @@ class _LoginState extends State<Login> {
                     label: "Entrar",
                     onPressed: () {
                       loginAction();
-                      login();
                     },
                   ),
                   Row(
@@ -205,7 +205,9 @@ class _LoginState extends State<Login> {
         ),
       );
     } else {
-      login();
+      Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => const Home()));
+      //login();
     }
   }
 
@@ -259,7 +261,7 @@ class _LoginState extends State<Login> {
       "password": passwordController.text
     };
 
-    Uri url = Uri.parse('http://192.168.0.131:3333/user/login');
+    Uri url = Uri.parse('http://192.168.1.225:3333/user/login');
     http.Response response = await http.post(url,
         headers: {'Accept': 'application/json'}, body: bodyParse);
 
@@ -269,7 +271,7 @@ class _LoginState extends State<Login> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Falha na autenticação. Usuário ou senha inválidos!"),
+          content: const Text("Falha na autenticação. Usuário ou senha inválidos!"),
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
           action: SnackBarAction(
