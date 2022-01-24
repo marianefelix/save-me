@@ -5,9 +5,14 @@ import 'package:flutter/material.dart';
 //import 'package:flutter_svg/flutter_svg.dart';
 
 class Header extends StatelessWidget {
-  const Header({ Key? key, required this.searchController }) : super(key: key);
+  const Header({ 
+    Key? key, 
+    required this.searchController, 
+    this.onChanged,
+  }) : super(key: key);
 
   final TextEditingController searchController;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,8 @@ class Header extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
                 icon: Icons.search,
                 isEmpty: searchController.text.isEmpty,
-                hasError: false
+                hasError: false,
+                onChanged: onChanged,
               ),
             ),
 
