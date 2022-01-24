@@ -1,20 +1,24 @@
+import 'package:app/model/category.dart';
+import 'package:app/model/link.dart';
 import 'package:app/ui/pages/home/components/Card/custom_card.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class CustomList extends StatelessWidget {
   const CustomList({ 
     Key? key, 
     required this.categories,
+    required this.links,
     required this.isGrid,
   }) : super(key: key);
 
-  final List<String> categories;
+  final List<Category> categories;
+  final List<Link> links;
   final bool isGrid;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 1,
       child: isGrid 
       ? GridView.builder(
         padding: const EdgeInsets.only(top: 20, bottom: 20),
@@ -25,12 +29,23 @@ class CustomList extends StatelessWidget {
         ),
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          final categorieItem = categories[index];
+          final categoryItem = categories[index];
+
+          final categoryLinks = links.where((linkItem) => 
+            linkItem.categoryId == categoryItem.id
+          ).toList();
+
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomCard(isGrid: isGrid, title: categorieItem,),
+              CustomCard(
+                isGrid: isGrid, 
+                title: categoryItem.title,
+                onTap: onTap,
+                shareOnPressed: () async {
+                  shareCatagory(categoryItem.title, categoryLinks);
+                }
+              ),
             ],
           );
         }
@@ -40,10 +55,36 @@ class CustomList extends StatelessWidget {
           padding: const EdgeInsets.only(top: 20, bottom: 20),
           itemCount: categories.length,
           itemBuilder: (context, index) {
-            final categorieItem = categories[index];
-            return CustomCard(isGrid: isGrid, title: categorieItem);
+            final categoryItem = categories[index];
+
+            final categoryLinks = links.where((linkItem) => 
+              linkItem.categoryId == categoryItem.id
+            ).toList();
+
+            return CustomCard(
+              isGrid: isGrid, 
+              title: categoryItem.title,
+              onTap: onTap,
+              shareOnPressed: () async {
+                shareCatagory(categoryItem.title, categoryLinks);
+              }
+            );
           }
         )
     );
   }
+
+  Future<void> shareCatagory(String categoryTitle, List<Link> categoryLinks,) async {
+    var linksToShare = StringBuffer();
+
+    linksToShare.write(categoryTitle + '\n');
+
+    for (var linkItem in categoryLinks) {
+      linksToShare.write(linkItem.link + '\n');
+    }
+
+    Share.share(linksToShare.toString());
+  }
+
+  void onTap() {}
 }

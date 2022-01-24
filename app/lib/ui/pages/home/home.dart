@@ -1,3 +1,5 @@
+import 'package:app/model/category.dart';
+import 'package:app/model/link.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/SortRow/sort_row.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
@@ -16,23 +18,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
 
-  List<String> categories = [
-    'Design',
-    'Inspirações',
-    'Teste',
-    'Teste 1',
-    'Teste 2',
-    'Teste 3',
-    'Teste 4',
-    'Teste 5',
-    'Teste 6',
-    'Teste 7',
-    'Teste 8',
-    'Teste 9',
-  ];
+  List<Category> categoryList = [];
+  List<Link> linkList = [];
 
   bool isGrid = true;
   String selectedSortOption = 'date';
+
+  @override void initState() {
+    super.initState();
+
+    generateLinks();
+    generateCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +53,7 @@ class _HomeState extends State<Home> {
               isGrid: isGrid,
             ),
 
-            CustomList(categories: categories, isGrid: isGrid),
+            CustomList(categories: categoryList, links: linkList, isGrid: isGrid),
             //EmptyState()
           ],
         ),
@@ -162,5 +159,68 @@ class _HomeState extends State<Home> {
     });
 
     Navigator.pop(context);
+  }
+
+  void generateLinks() {
+    final linkJson = [
+      {
+        "id": 1,
+        "link": "https://teste.com",
+        "favorite": false,
+        "user_id": 1,
+        "category_id": 1
+      },
+      {
+        "id": 2,
+        "link": "https://teste2.com",
+        "favorite": false,
+        "user_id": 1,
+        "category_id": 1
+      },
+      {
+        "id": 3,
+        "link": "https://teste3.com",
+        "favorite": false,
+        "user_id": 1,
+        "category_id": 2
+      },
+    ];
+
+    for (var json in linkJson) {
+      final Link link = Link.fromJson(json);
+
+      linkList.add(link);
+    }
+  }
+
+  void generateCategories() {
+    final categoryJson = [
+      {
+        "id": 1,
+        "title": 'Design',
+      },
+      {
+        "id": 2,
+        "title": 'Inspirações',
+      },
+      {
+        "id": 3,
+        "title": 'Teste Categoria 1',
+      },
+      {
+        "id": 4,
+        "title": 'Teste Categoria 2',
+      },
+      {
+        "id": 5,
+        "title": 'Teste Categoria 3',
+      },
+    ];
+
+    for (var json in categoryJson) {
+      final Category category = Category.fromJson(json);
+
+      categoryList.add(category);
+    }
   }
 }
