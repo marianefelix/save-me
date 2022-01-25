@@ -1,5 +1,5 @@
-import 'package:app/models/category.dart';
-import 'package:app/models/link.dart';
+import 'package:app/models/category_model.dart';
+import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/home/components/Card/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -12,8 +12,8 @@ class CustomList extends StatelessWidget {
     required this.isGrid,
   }) : super(key: key);
 
-  final List<Category> categories;
-  final List<Link> links;
+  final List<CategoryModel> categories;
+  final List<LinkModel> links;
   final bool isGrid;
 
   @override
@@ -74,7 +74,7 @@ class CustomList extends StatelessWidget {
     );
   }
 
-  Future<void> shareCatagory(String categoryTitle, List<Link> categoryLinks,) async {
+  Future<void> shareCatagory(String categoryTitle, List<LinkModel> categoryLinks) async {
     var linksToShare = StringBuffer();
 
     linksToShare.write(categoryTitle + '\n');
