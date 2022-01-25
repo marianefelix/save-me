@@ -1,5 +1,5 @@
-import 'package:app/model/category.dart';
-import 'package:app/model/link.dart';
+import 'package:app/models/category.dart';
+import 'package:app/models/link.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/SortRow/sort_row.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';

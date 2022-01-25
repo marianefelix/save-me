@@ -1,5 +1,5 @@
-import 'package:app/model/category.dart';
-import 'package:app/model/link.dart';
+import 'package:app/models/category.dart';
+import 'package:app/models/link.dart';
 import 'package:app/ui/pages/home/components/Card/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';

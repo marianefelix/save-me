@@ -1,6 +1,6 @@
 import 'package:app/ui/utils/custom_colors.dart';
-import 'package:app/ui/utils/form/primary_button.dart';
-import 'package:app/ui/utils/form/text_field.dart';
+import 'package:app/ui/utils/Form/primary_button.dart';
+import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:flutter/material.dart';
 
 class SaveLink extends StatefulWidget {
