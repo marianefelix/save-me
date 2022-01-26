@@ -1,13 +1,13 @@
-class Link {
+class LinkModel {
   int id = 0;
   String link = "";
   bool favorite = false;
   int userId = 0;
   int categoryId = 0;
 
-  Link();
+  LinkModel();
 
-  Link.fromJson(Map<String, dynamic> json) {
+  LinkModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     link = json['link'];
     favorite = json['favorite'];

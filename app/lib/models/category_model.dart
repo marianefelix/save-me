@@ -1,11 +1,11 @@
-class Category {
+class CategoryModel {
   int id = 0;
   String title = "";
 
 
-  Category();
+  CategoryModel();
 
-  Category.fromJson(Map<String, dynamic> json) {
+  CategoryModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
   }

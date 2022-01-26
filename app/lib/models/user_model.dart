@@ -1,11 +1,11 @@
-class User {
+class UserModel {
   int id = 0;
   String name = "";
   String email = "";
 
-  User();
+  UserModel();
 
-  User.fromJson(Map<String, dynamic> json) {
+  UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     email = json['email'];

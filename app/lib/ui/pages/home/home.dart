@@ -1,5 +1,5 @@
-import 'package:app/model/category.dart';
-import 'package:app/model/link.dart';
+import 'package:app/models/category_model.dart';
+import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/SortRow/sort_row.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
@@ -18,8 +18,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
 
-  List<Category> categoryList = [];
-  List<Link> linkList = [];
+  List<CategoryModel> categoryList = [];
+  List<LinkModel> linkList = [];
 
   bool isGrid = true;
   bool isSearchEmpty = true;
@@ -27,8 +27,6 @@ class _HomeState extends State<Home> {
 
   @override void initState() {
     super.initState();
-
-    print(searchController.text.isEmpty);
 
     generateLinks();
     generateCategories();
@@ -208,7 +206,7 @@ class _HomeState extends State<Home> {
     ];
 
     for (var json in linkJson) {
-      final Link link = Link.fromJson(json);
+      final LinkModel link = LinkModel.fromJson(json);
 
       linkList.add(link);
     }
@@ -239,7 +237,7 @@ class _HomeState extends State<Home> {
     ];
 
     for (var json in categoryJson) {
-      final Category category = Category.fromJson(json);
+      final CategoryModel category = CategoryModel.fromJson(json);
 
       categoryList.add(category);
     }
