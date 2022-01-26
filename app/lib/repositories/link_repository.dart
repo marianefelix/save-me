@@ -20,7 +20,7 @@ class LinkRepository {
     return links;
   }
 
-  Future<String> addLink(Map params) async {
+  Future<String> createLink(Map params) async {
     final response = await api.post(url, data: jsonEncode(params));
 
     if (response.statusCode == 200) {
