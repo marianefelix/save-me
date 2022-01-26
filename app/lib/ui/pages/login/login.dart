@@ -1,5 +1,6 @@
+import 'package:app/controllers/login_controller.dart';
 import 'package:app/ui/pages/home/home.dart';
-import 'package:app/ui/pages/register/registration.dart';
+import 'package:app/ui/pages/registration/registration.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/password_field.dart';
 import 'package:app/ui/utils/Form/primary_button.dart';
@@ -23,6 +24,7 @@ class _LoginState extends State<Login> {
 
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
+  final _loginController = LoginController();
 
   bool _isEmailEmpty = true;
   bool _isPaswordEmpty = true;
@@ -256,14 +258,8 @@ class _LoginState extends State<Login> {
   }
 
   login() async {
-    var bodyParse = {
-      "email": emailController.text,
-      "password": passwordController.text
-    };
-
-    Uri url = Uri.parse('http://192.168.1.225:3333/user/login');
-    http.Response response = await http.post(url,
-        headers: {'Accept': 'application/json'}, body: bodyParse);
+    // TODO: adicionar loading
+    final response = await _loginController.login(emailController.text, passwordController.text);
 
     if (response.statusCode == 200) {
       Navigator.pushReplacement(
