@@ -1,15 +1,16 @@
-const path = require('path');
+const path = require("path");
+import "dotenv/config";
 
 module.exports = {
-  client: 'pg',
+  client: "pg",
   connection: {
-    host: 'localhost',
-    port: 5432,
-    user: 'root',
-    password: 'root',
-    database: 'save_me',
+    host: process.env.PG_HOST,
+    user: process.env.PG_USER,
+    password: process.env.PG_PASSWORD,
+    database: process.env.PG_DATABASE,
   },
   migrations: {
-    directory: path.resolve(__dirname, 'src', 'database', 'migrations'),
+    directory: path.resolve(__dirname, "src", "database", "migrations"),
   },
+  useNullAsDefault: true,
 };
