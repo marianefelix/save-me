@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "knex:migrate": "knex migrate:latest",
-    "knex:rollback": "knex migrate:down"
+    "knex:migrate": "knex --knexfile migrate:latest",
+    "knex:rollback": "knex --knexfile migrate:down"
   },
   "keywords": [],
   "author": "",
