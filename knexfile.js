@@ -1,5 +1,5 @@
 const path = require("path");
-import "dotenv/config";
+require("dotenv/config");
 
 module.exports = {
   client: "pg",
