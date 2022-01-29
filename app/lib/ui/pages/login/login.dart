@@ -1,4 +1,6 @@
 import 'package:app/controllers/login_controller.dart';
+import 'package:app/storage/user_storage.dart';
+import 'package:app/store/app_store.dart';
 import 'package:app/ui/pages/home/home.dart';
 import 'package:app/ui/pages/registration/registration.dart';
 import 'package:app/ui/utils/custom_colors.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/ui/utils/background.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -264,19 +267,30 @@ class _LoginState extends State<Login> {
   }
 
   login() async {
-    final params = {
-      "email": emailController.text,
-      "password": passwordController.text
-    };    
+    final appStore = Provider.of<AppStore>(context, listen: false);
 
     try {
       setState(() {
         _isLoading = true;
       });
 
+      // login
+      final params = {
+        "email": emailController.text,
+        "password": passwordController.text
+      };
+
       final response = await _loginController.login(params);
 
-       Navigator.pushReplacement(
+      //token
+      final token = response.data['token'];
+      await UserStorage.setToken(token);
+
+      // user informations
+      final user = await _loginController.getUserInfos(token);
+      appStore.setUser(user);
+      
+      Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const Home()));
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,6 +1,9 @@
+import 'package:app/storage/user_storage.dart';
+import 'package:app/store/app_store.dart';
 import 'package:app/ui/pages/login/login.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -11,7 +14,14 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final appStore =  Provider.of<AppStore>(context, listen: false);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(90.0),
@@ -62,9 +72,9 @@ class _ProfileState extends State<Profile> {
                       borderRadius: BorderRadius.circular(60.0),
                       color: CustomColors.purple,
                     ),
-                    child: const Text(
-                      'M',
-                      style: TextStyle(
+                    child: Text(
+                      appStore.user.name[0],
+                      style: const TextStyle(
                         fontSize: 50, 
                         color: CustomColors.white
                       ),
@@ -90,7 +100,7 @@ class _ProfileState extends State<Profile> {
                       Row(
                         children: [
                           Text(
-                            'Mariane',
+                            "Mariane",
                             style: TextStyle(
                               fontSize: 30,
                               color: CustomColors.grey[500],
@@ -116,7 +126,7 @@ class _ProfileState extends State<Profile> {
                       Row(
                         children: [
                           Text(
-                            'mari@email.com.br',
+                            appStore.user.email,
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.normal,
@@ -253,11 +263,7 @@ class _ProfileState extends State<Profile> {
 
               GestureDetector(
               onTap: () {
-                Navigator.pushReplacement(context, 
-                  MaterialPageRoute(
-                    builder: (context) => const Login()
-                  )
-                );
+                logout();
               },
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -285,6 +291,16 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       ),
+    );
+  }
+
+  void logout() async {
+    await UserStorage.setToken('');
+
+    Navigator.pushReplacement(context, 
+      MaterialPageRoute(
+        builder: (context) => const Login()
+      )
     );
   }
 }

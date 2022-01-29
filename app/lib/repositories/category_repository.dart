@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:app/models/category_model.dart';
 import 'package:app/services/api.dart';
+import 'package:app/storage/user_storage.dart';
 
 class CategoryRepository {
   final api = DioClient.dio;
   final url = '/category';
 
   Future<List<CategoryModel>> fetchCategories() async {
+    final token = await UserStorage.getToken();
+    api.options.headers['Authorization'] = 'Bearer $token)}';
+
     final response = await api.get(url);
     final data = response.data as List;
 
@@ -20,13 +24,12 @@ class CategoryRepository {
     return categories;
   }
 
-  Future<String> createCategory(Map<String, String> params) async {
+  Future createCategory(Map<String, String> params) async {
+    final token = await UserStorage.getToken();
+    api.options.headers['Authorization'] = 'Bearer $token)}';
+
     final response = await api.post(url, data: jsonEncode(params));
 
-    if (response.statusCode == 200) {
-      return "Categoria salva com sucesso!";
-    }
-
-    return "Erro ao salvar categoria, tente novamente.";
+    return response;
   }
 }
