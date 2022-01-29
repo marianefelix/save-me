@@ -401,7 +401,7 @@ class _RegistrationState extends State<Registration> {
       );
     }
 
-    if (!isFormValid() && isEmailFieldValid() && arePasswordFieldsValid()) {
+    if (isFormValid() && isEmailFieldValid() && arePasswordFieldsValid()) {
       createUser();
     }
   }
@@ -413,13 +413,13 @@ class _RegistrationState extends State<Registration> {
       "password": passwordController.text
     };
     
-    // TODO: adicionar loading
-    final response = await _registrationController.createUser(params);
+    try {
+      // TODO: adicionar loading
+      final response = await _registrationController.createUser(params);
 
-    if (response.statusCode == 200) {
       Navigator.push(
-      context, MaterialPageRoute(builder: (context) => const Login()));
-    } else {
+        context, MaterialPageRoute(builder: (context) => const Login()));
+    } catch(error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Falha ao cadastrar usuário. Tente novamente!"),

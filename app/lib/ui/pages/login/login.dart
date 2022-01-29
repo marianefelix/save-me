@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/ui/utils/background.dart';
-import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -207,9 +206,7 @@ class _LoginState extends State<Login> {
         ),
       );
     } else {
-      Navigator.pushReplacement(
-      context, MaterialPageRoute(builder: (context) => const Home()));
-      //login();
+      login();
     }
   }
 
@@ -258,13 +255,18 @@ class _LoginState extends State<Login> {
   }
 
   login() async {
-    // TODO: adicionar loading
-    final response = await _loginController.login(emailController.text, passwordController.text);
+    final params = {
+      "email": emailController.text,
+      "password": passwordController.text
+    };    
 
-    if (response.statusCode == 200) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const Home()));
-    } else {
+    try {
+      // TODO: adicionar loading
+      final response = await _loginController.login(params);
+
+       Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const Home()));
+    } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text("Falha na autenticação. Usuário ou senha inválidos!"),
