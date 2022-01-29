@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:app/models/link_model.dart';
 import 'package:app/services/api.dart';
+import 'package:app/storage/user_storage.dart';
 
 class LinkRepository {
   final api = DioClient.dio;
   final url = '/link';
 
   Future<List<LinkModel>> fetchLinks() async {
+    final token = await UserStorage.getToken();
+    api.options.headers['Authorization'] = 'Bearer $token)}';
+
     final response = await api.get(url);
     final data = response.data as List;
 
@@ -20,35 +24,32 @@ class LinkRepository {
     return links;
   }
 
-  Future<String> createLink(Map params) async {
+  Future createLink(Map params) async {
+    final token = await UserStorage.getToken();
+    api.options.headers['Authorization'] = 'Bearer $token)}';
+
     final response = await api.post(url, data: jsonEncode(params));
 
-    if (response.statusCode == 200) {
-      return "Link salvo com sucesso!";
-    }
-
-    return "Erro ao salvar link, tente novamente.";
+    return response;
   }
 
-  Future<String> updateLink(LinkModel params) async {
+  Future updateLink(LinkModel params) async {
+    final token = await UserStorage.getToken();
     final putUrl = url + params.id.toString();
+    api.options.headers['Authorization'] = 'Bearer $token)}';
+
     final response = await api.put(putUrl, data: params.toJson());
 
-    if (response.statusCode == 200) {
-      return "Link editado com sucesso!";
-    }
-
-    return "Erro ao editar link, tente novamente.";
+    return response;
   }
 
-  Future<String> deleteLink(int id) async {
+  Future deleteLink(int id) async {
+    final token = await UserStorage.getToken();
     final deleteUrl = url + id.toString();
+    api.options.headers['Authorization'] = 'Bearer $token)}';
+  
     final response = await api.delete(deleteUrl);
 
-    if (response.statusCode == 200) {
-      return "Link removido com sucesso!";
-    }
-
-    return "Erro ao remover link, tente novamente.";
+    return response;
   }
 }
