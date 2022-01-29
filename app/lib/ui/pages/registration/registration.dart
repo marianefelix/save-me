@@ -1,10 +1,11 @@
+import 'package:app/controllers/registration_controller.dart';
+import 'package:app/ui/pages/login/login.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/password_field.dart';
 import 'package:app/ui/utils/Form/primary_button.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
 
 class Registration extends StatefulWidget {
   const Registration({Key? key}) : super(key: key);
@@ -21,6 +22,7 @@ class _RegistrationState extends State<Registration> {
 
   final _passwordFocusNode = FocusNode();
   final _passwordConfirmFocusNode = FocusNode();
+  final _registrationController = RegistrationController();
 
   bool _isNameEmpty = true;
   bool _isEmailEmpty = true;
@@ -60,9 +62,6 @@ class _RegistrationState extends State<Registration> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-
     super.dispose();
 
     nameController = TextEditingController();
@@ -209,7 +208,6 @@ class _RegistrationState extends State<Registration> {
                 label: "Cadastrar",
                 onPressed: () {
                   registrationAction();
-                  createUser();
                 },
               ),
             ),
@@ -402,19 +400,38 @@ class _RegistrationState extends State<Registration> {
         ),
       );
     }
+
+    if (isFormValid() && isEmailFieldValid() && arePasswordFieldsValid()) {
+      createUser();
+    }
   }
 
   createUser() async {
-    var bodyParse = {
+    final params = {
       "name": nameController.text,
       "email": emailController.text,
       "password": passwordController.text
     };
+    
+    try {
+      // TODO: adicionar loading
+      final response = await _registrationController.createUser(params);
 
-    Uri url = Uri.parse('http://192.168.1.225:3333/user');
-    http.Response response = await http.post(url,
-        headers: {'Accept': 'application/json'}, body: bodyParse);
-
-    print(response);
+      Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const Login()));
+    } catch(error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Falha ao cadastrar usuário. Tente novamente!"),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
+          action: SnackBarAction(
+            textColor: CustomColors.white,
+            label: 'Fechar',
+            onPressed: () {},
+          ),
+        ),
+      );
+    }
   }
 }
