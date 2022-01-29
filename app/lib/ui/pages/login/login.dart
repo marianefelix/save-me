@@ -3,8 +3,8 @@ import 'package:app/ui/pages/home/home.dart';
 import 'package:app/ui/pages/registration/registration.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/password_field.dart';
-import 'package:app/ui/utils/Form/primary_button.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
+import 'package:app/ui/utils/form/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,6 +32,7 @@ class _LoginState extends State<Login> {
   String _errorMessage = '';
   bool _hasEmailError = false;
   bool _hasPasswordError = false;
+  bool _isLoading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -68,6 +69,8 @@ class _LoginState extends State<Login> {
     _errorMessage = '';
     _hasEmailError = false;
     _hasPasswordError = false;
+
+    _isLoading = false;
   }
 
   @override
@@ -133,39 +136,45 @@ class _LoginState extends State<Login> {
                       });
                     },
                   ),
+
                   const SizedBox(height: 30),
+
                   PrimaryButton(
+                    isLoading: _isLoading,
                     label: "Entrar",
                     onPressed: () {
                       loginAction();
                     },
                   ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Registration()));
+                            context,
+                            MaterialPageRoute(builder: (context) => const Registration()
+                          ));
                         },
                         child: RichText(
                           text: const TextSpan(
                             text: 'Não tem uma conta? ',
                             style: TextStyle(
-                                color: CustomColors.grey,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w300,
-                                fontSize: 14),
+                              color: CustomColors.grey,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14
+                            ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: 'Cadastre-se',
                                 style: TextStyle(
-                                    color: CustomColors.grey,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
+                                  color: CustomColors.grey,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14
+                                ),
                               ),
                             ],
                           ),
@@ -261,7 +270,10 @@ class _LoginState extends State<Login> {
     };    
 
     try {
-      // TODO: adicionar loading
+      setState(() {
+        _isLoading = true;
+      });
+
       final response = await _loginController.login(params);
 
        Navigator.pushReplacement(
@@ -279,6 +291,10 @@ class _LoginState extends State<Login> {
           ),
         ),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 }

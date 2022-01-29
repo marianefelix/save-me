@@ -1,6 +1,6 @@
 import 'package:app/ui/utils/custom_colors.dart';
-import 'package:app/ui/utils/Form/primary_button.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
+import 'package:app/ui/utils/form/primary_button.dart';
 import 'package:flutter/material.dart';
 
 class SaveLink extends StatefulWidget {
@@ -18,6 +18,8 @@ class _SaveLinkState extends State<SaveLink> {
   bool _isTitleEmpty = true;
   bool _isLinkEmpty = true;
   bool _isCategoryEmpty = true;
+
+  bool _isLoading = false;
 
 
   @override
@@ -37,6 +39,7 @@ class _SaveLinkState extends State<SaveLink> {
     _isLinkEmpty = true;
     _isCategoryEmpty = true;
 
+    _isLoading = false;
   }
 
   @override
@@ -172,6 +175,7 @@ class _SaveLinkState extends State<SaveLink> {
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: PrimaryButton(
+                  isLoading: _isLoading,
                   label: "Confirmar",
                   backgroundColor: _isLinkEmpty ? CustomColors.grey[100] : CustomColors.purple,
                   textColor: _isLinkEmpty ? CustomColors.grey[300] : CustomColors.white,

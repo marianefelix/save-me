@@ -2,8 +2,8 @@ import 'package:app/controllers/registration_controller.dart';
 import 'package:app/ui/pages/login/login.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/password_field.dart';
-import 'package:app/ui/utils/Form/primary_button.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
+import 'package:app/ui/utils/form/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -39,6 +39,8 @@ class _RegistrationState extends State<Registration> {
   bool _hasEmailError = false;
   bool _hasPasswordError = false;
   bool _hasPaswordConfirmError = false;
+
+  bool _isLoading = false;
 
   String _errorMessage = '';
   String _emailErrorMessage = '';
@@ -85,6 +87,8 @@ class _RegistrationState extends State<Registration> {
     _errorMessage = '';
     _emailErrorMessage = '';
     _passwordErrorMessage = '';
+
+    _isLoading = false;
   }
 
   @override
@@ -205,6 +209,7 @@ class _RegistrationState extends State<Registration> {
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: PrimaryButton(
+                isLoading: _isLoading,
                 label: "Cadastrar",
                 onPressed: () {
                   registrationAction();
@@ -414,8 +419,11 @@ class _RegistrationState extends State<Registration> {
     };
     
     try {
-      // TODO: adicionar loading
-      final response = await _registrationController.createUser(params);
+      setState(() {
+        _isLoading = true;
+      });
+
+      await _registrationController.createUser(params);
 
       Navigator.push(
         context, MaterialPageRoute(builder: (context) => const Login()));
@@ -432,6 +440,10 @@ class _RegistrationState extends State<Registration> {
           ),
         ),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 }
