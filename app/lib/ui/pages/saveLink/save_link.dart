@@ -1,3 +1,5 @@
+import 'package:app/models/category_model.dart';
+import 'package:app/ui/pages/saveLink/components/category_field.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
@@ -20,11 +22,18 @@ class _SaveLinkState extends State<SaveLink> {
   bool _isCategoryEmpty = true;
 
   bool _isLoading = false;
+  bool _isCategoryRequestLoading = false;
+
+  List<CategoryModel> categoryList = [];
+  List<CategoryModel> searchCategoryResult = [];
+
+  CategoryModel selectedCategory = CategoryModel();
 
 
   @override
   void initState() {
     super.initState();
+    generateCategories();
   }
 
   @override
@@ -40,6 +49,8 @@ class _SaveLinkState extends State<SaveLink> {
     _isCategoryEmpty = true;
 
     _isLoading = false;
+    _isCategoryRequestLoading = false;
+    selectedCategory = CategoryModel();
   }
 
   @override
@@ -142,30 +153,44 @@ class _SaveLinkState extends State<SaveLink> {
           Text(
             "Categoria:", 
             style: TextStyle(
-            color: CustomColors.grey[500],
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
+              color: CustomColors.grey[500],
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
             )
           ),
   
           const SizedBox(height: 8),
-  
-          SizedBox(
-            height: 50,
-            child: CustomTextField(
-              controller: categoryController,
-              contentPadding: EdgeInsets.zero,
-              icon: Icons.search_outlined,
-              labelText: "Digite a categoria",
+
+          selectedCategory.id != 0 
+            ? Chip(
+                backgroundColor: CustomColors.purple,
+                padding: const EdgeInsets.all(12),
+                deleteIcon: const Icon(
+                  Icons.close, 
+                  color: CustomColors.white,
+                  size: 15,
+                ),
+                onDeleted: deleteSelectedCategory,
+                label: Text(
+                selectedCategory.title,
+                style: const 
+                  TextStyle(
+                    color: CustomColors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              )
+            : CategoryField(
+              controller: categoryController, 
               isEmpty: _isCategoryEmpty,
               hasError: false,
-              onChanged: (value) {
-                setState(() {
-                  _isCategoryEmpty = value.isEmpty;
-                });
-              }
+              categories: searchCategoryResult,
+              onChanged: categoryFieldOnChanged,
+              categoryChipOnSelect: categoryChipOnSelect,
+              createCategoryOnPressed: createCategoryOnPressed,
+              isLoading: _isCategoryRequestLoading,
             ),
-          ),
           
           const SizedBox(height: 50),
   
@@ -189,5 +214,76 @@ class _SaveLinkState extends State<SaveLink> {
         ],
       ),
     );
+  }
+
+  void generateCategories() {
+    // TODO: integrar com a api
+
+    final categoryJson = [
+      {
+        "id": 1,
+        "title": 'Design',
+      },
+      {
+        "id": 2,
+        "title": 'Inspirações',
+      },
+      {
+        "id": 3,
+        "title": 'Teste Categoria 1',
+      },
+      {
+        "id": 4,
+        "title": 'Teste Categoria 2',
+      },
+      {
+        "id": 5,
+        "title": 'Teste Categoria 3',
+      },
+    ];
+
+    for (var json in categoryJson) {
+      final CategoryModel category = CategoryModel.fromJson(json);
+
+      categoryList.add(category);
+      searchCategoryResult.add(category);
+    }
+  }
+
+  void categoryFieldOnChanged(String value) {
+    final newList = categoryList.where((category) {
+      final lowerCaseTitle = category.title.toLowerCase();
+      final lowerCaseValue = value.toLowerCase();
+  
+      if (lowerCaseTitle.contains(lowerCaseValue)) {
+        return true;
+      }
+
+      return false;
+    }).toList();
+
+    setState(() {
+      searchCategoryResult = newList;
+    });
+  }
+
+  void categoryChipOnSelect(CategoryModel category) {
+    setState(() {
+      selectedCategory = category;
+    });
+  }
+
+  void deleteSelectedCategory() {
+    setState(() {
+      selectedCategory = CategoryModel();
+    });
+  }
+
+  void createCategoryOnPressed() {
+    // TODO: integrar com a api
+
+    setState(() {
+      _isCategoryRequestLoading = true;
+    });
   }
 }

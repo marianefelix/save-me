@@ -38,10 +38,7 @@ class MyApp extends StatelessWidget {
               ),
               filled: true,
               fillColor: CustomColors.grey[50],
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: CustomColors.purple),
-              ),
+              floatingLabelBehavior: FloatingLabelBehavior.never,
             )
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:app/ui/utils/custom_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatelessWidget {
@@ -12,6 +13,7 @@ class CustomElevatedButton extends StatelessWidget {
     required this.padding,
     this.onPressed,
     this.fontWeight,
+    this.isLoading,
   }) : super(key: key);
 
 
@@ -24,11 +26,12 @@ class CustomElevatedButton extends StatelessWidget {
   final IconData icon;
   final EdgeInsetsGeometry padding;
   final Function()? onPressed;
+  final bool? isLoading;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: (isLoading != null && isLoading!) ? null : onPressed,
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith((_) { 
           return backgroundColor;
@@ -47,21 +50,36 @@ class CustomElevatedButton extends StatelessWidget {
       ),
       child: Row(
         children: [
+          isLoading != null && isLoading!
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: CustomColors.purple,
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Icon(
+                  icon, 
+                  size: iconSize,
+                  color: color,
+                ),
+              ),
+              
           Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Icon(
-              icon, 
-              size: iconSize,
-              color: color,
+            padding: EdgeInsets.only(left: (isLoading != null && isLoading!) ? 10 : 0),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: fontSize,
+                color: (isLoading != null && isLoading!)
+                  ? CustomColors.grey[300]
+                  : color ?? CustomColors.grey[500],
+                fontWeight: fontWeight ?? FontWeight.normal
+              )
             ),
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: fontSize,
-              color: color,
-              fontWeight: fontWeight ?? FontWeight.normal
-            )
           ),
         ],
       )

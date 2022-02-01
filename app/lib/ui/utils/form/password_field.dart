@@ -52,7 +52,11 @@ class PasswordField extends StatelessWidget {
                 ? CustomColors.grey[200]!  
                 : CustomColors.purple
             ),
-          ), 
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: CustomColors.purple),
+          ),
           prefixIcon: Icon(
             Icons.lock_outline, 
             color: CustomColors.grey[300]
