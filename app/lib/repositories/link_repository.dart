@@ -24,7 +24,7 @@ class LinkRepository {
     return links;
   }
 
-  Future createLink(Map params) async {
+  Future createLink(Map<String, String> params) async {
     final token = await UserStorage.getToken();
     api.options.headers['Authorization'] = 'Bearer $token)}';
 

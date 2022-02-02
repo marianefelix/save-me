@@ -5,14 +5,14 @@ import 'package:app/services/api.dart';
 import 'package:app/storage/user_storage.dart';
 
 class CategoryRepository {
-  final api = DioClient.dio;
-  final url = '/category';
+  final _api = DioClient.dio;
+  final _url = '/category';
 
   Future<List<CategoryModel>> fetchCategories() async {
     final token = await UserStorage.getToken();
-    api.options.headers['Authorization'] = 'Bearer $token)}';
+    _api.options.headers['Authorization'] = 'Bearer $token)}';
 
-    final response = await api.get(url);
+    final response = await _api.get(_url);
     final data = response.data as List;
 
     List<CategoryModel> categories = [];
@@ -26,9 +26,9 @@ class CategoryRepository {
 
   Future createCategory(Map<String, String> params) async {
     final token = await UserStorage.getToken();
-    api.options.headers['Authorization'] = 'Bearer $token)}';
+    _api.options.headers['Authorization'] = 'Bearer $token)}';
 
-    final response = await api.post(url, data: jsonEncode(params));
+    final response = await _api.post(_url, data: jsonEncode(params));
 
     return response;
   }
