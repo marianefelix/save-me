@@ -2,7 +2,7 @@ exports.up = async (knex) =>
   knex.schema.createTable("link", (table) => {
     table.increments("id").primary();
     table.string("link").notNullable();
-    table.boolean("favorite").notNullable();
+    table.boolean("favorite").notNullable().defaultTo(false);
 
     table
       .integer("user_id")

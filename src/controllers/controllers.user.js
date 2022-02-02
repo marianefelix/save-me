@@ -87,11 +87,10 @@ class userControllers {
             sub: email_find.id,
             iss: "saveMe_backend",
             aud: "saveMe_frontend",
-            user: email_find.user,
+            name: email_find.name,
             email: email_find.email,
           },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: 300 }
+          process.env.ACCESS_TOKEN_SECRET
         );
 
         return response.status(200).json({

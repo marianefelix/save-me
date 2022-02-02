@@ -66,6 +66,54 @@ class LinkControllers {
       });
     }
   }
+
+  async getLinksByUser(request, response) {
+    const { sub } = request.user;
+
+    const savedLinks = await knex("link").where("user_id", sub).select();
+
+    return response.json(savedLinks);
+  }
+
+  async getLinksCount(request, response) {
+    const { sub } = request.user;
+
+    const savedLinks = await knex("link").where("user_id", sub).select();
+
+    return response.json(savedLinks.length);
+  }
+
+  async getFavoritesLink(request, response) {
+    const { sub } = request.user;
+
+    const linksUser = await knex("link").where("user_id", sub).select();
+
+    let favoriteLinks = [];
+
+    for (let link of linksUser) {
+      if (link.favorite === true) {
+        favoriteLinks.push(link);
+      }
+    }
+
+    return response.json(favoriteLinks);
+  }
+
+  async getFavoritesCount(request, response) {
+    const { sub } = request.user;
+
+    const linksUser = await knex("link").where("user_id", sub).select();
+
+    let favoriteLinks = [];
+
+    for (let link of linksUser) {
+      if (link.favorite === true) {
+        favoriteLinks.push(link);
+      }
+    }
+
+    return response.json(favoriteLinks.length);
+  }
 }
 
 module.exports = LinkControllers;
