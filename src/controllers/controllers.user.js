@@ -82,26 +82,12 @@ class userControllers {
         .first();
 
       if (email_find && (await bcrypt.compare(password, email_find.password))) {
-        const user = await knex("user")
-          .where("id", email_find.id)
-          .select("name")
-          .first();
-
-        const linksUser = await knex("link")
-          .where("user_id", email_find.id)
-          .select();
-
-        const categories = await knex("category").select();
-
         const token = jwt.sign(
           {
             sub: email_find.id,
             iss: "saveMe_backend",
             aud: "saveMe_frontend",
-            name: user.name,
-            registeredLinks: linksUser.length,
-            categories: categories.length - 1,
-            user: email_find.user,
+            name: email_find.name,
             email: email_find.email,
           },
           process.env.ACCESS_TOKEN_SECRET

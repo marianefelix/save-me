@@ -10,10 +10,11 @@ class CategoryControllers {
   }
   async create(request, response) {
     try {
-      const { title } = request.body;
+      const { title, user_id } = request.body;
 
       const category_insert = {
         title,
+        user_id,
       };
 
       await knex("category").insert(category_insert);
@@ -30,10 +31,11 @@ class CategoryControllers {
   async update(request, response) {
     try {
       const id = request.params;
-      const { title } = request.body;
+      const { title, user_id } = request.body;
 
       const linkUpdate = {
         title,
+        user_id,
       };
 
       await knex("category").update(linkUpdate).where(id);
@@ -61,6 +63,20 @@ class CategoryControllers {
         error: err,
       });
     }
+  }
+  async getCategoryByUser(request, response) {
+    const { sub } = request.user;
+
+    const categories = await knex("category").where("user_id", sub).select();
+
+    return response.json(categories);
+  }
+  async getCategoryCount(request, response) {
+    const { sub } = request.user;
+
+    const categories = await knex("category").where("user_id", sub).select();
+
+    return response.json(categories.length);
   }
 }
 

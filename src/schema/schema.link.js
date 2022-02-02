@@ -7,6 +7,6 @@ module.exports = {
     user_id: { type: "integer" },
     category_id: { type: "integer" },
   },
-  required: ["link", "favorite", "user_id", "category_id"],
+  required: ["link", "user_id", "category_id"],
   additionalProperties: false,
 };
