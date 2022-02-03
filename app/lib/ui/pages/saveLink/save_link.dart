@@ -8,7 +8,7 @@ import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class SaveLink extends StatefulWidget {
-  const SaveLink({ Key? key }) : super(key: key);
+  const SaveLink({Key? key}) : super(key: key);
 
   @override
   _SaveLinkState createState() => _SaveLinkState();
