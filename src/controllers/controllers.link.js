@@ -8,19 +8,20 @@ class LinkControllers {
   }
   async create(request, response) {
     try {
-      const { link, favorite, user_id, category_id } = request.body;
+      const { titulo, link, favorite, category_id } = request.body;
 
       const link_insert = {
+        titulo,
         link,
         favorite,
-        user_id,
+        user_id: request.user.sub,
         category_id,
       };
 
       await knex("link").insert(link_insert);
 
       return response.status(200).json({
-        msg: "Link inserido!",
+        link_insert,
       });
     } catch (err) {
       return response.status(400).json({
@@ -31,9 +32,10 @@ class LinkControllers {
   async update(request, response) {
     try {
       const id = request.params;
-      const { link, favorite, user_id, category_id } = request.body;
+      const { titulo, link, favorite, user_id, category_id } = request.body;
 
       const linkUpdate = {
+        titulo,
         link,
         favorite,
         user_id,

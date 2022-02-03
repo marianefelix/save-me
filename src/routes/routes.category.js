@@ -10,24 +10,16 @@ router.put("/category/:id", midCategory);
 
 const categoryControllers = new CategoryControllers();
 
-router.get("/category", categoryControllers.index);
+router.get("/category", midAuth, categoryControllers.index);
+
+router.get("/category/count", midAuth, categoryControllers.getCategoriesCount);
+
+router.get("/category/all", categoryControllers.getAllLinks);
 
 router.post("/category", categoryControllers.create);
 
 router.put("/category/:id", categoryControllers.update);
 
 router.delete("/category/:id", categoryControllers.delete);
-
-router.get(
-  "/by-user/categories",
-  midAuth,
-  categoryControllers.getCategoryByUser
-);
-
-router.get(
-  "/by-user/categories/count",
-  midAuth,
-  categoryControllers.getCategoryCount
-);
 
 module.exports = router;

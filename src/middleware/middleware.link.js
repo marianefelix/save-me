@@ -3,12 +3,12 @@ const ajv = new Ajv();
 const linkSchema = require("../schema/schema.link");
 
 function validarRecurso(request, response, next) {
-  const { link, favorite, user_id, category_id } = request.body;
+  const { titulo, link, favorite, category_id } = request.body;
 
   const linkInsert = {
+    titulo,
     link,
     favorite,
-    user_id,
     category_id,
   };
 
