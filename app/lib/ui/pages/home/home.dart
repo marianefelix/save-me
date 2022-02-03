@@ -1,12 +1,16 @@
+import 'package:app/controllers/home_controller.dart';
 import 'package:app/models/category_model.dart';
 import 'package:app/models/link_model.dart';
+import 'package:app/stores/HomeStore/home_store.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/SortRow/sort_row.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
 import 'package:app/ui/utils/ElevatedButton/elevated_button.dart';
 import 'package:app/ui/utils/ScaffoldBase/scaffold_base.dart';
 import 'package:app/ui/utils/custom_colors.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class Home extends StatefulWidget {
   const Home({ Key? key }) : super(key: key);
@@ -15,11 +19,13 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
+final homeStore = HomeStore();
+
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
 
-  List<CategoryModel> categoryList = [];
   List<LinkModel> linkList = [];
+  final _homeController = HomeController();
 
   bool isGrid = true;
   bool isSearchEmpty = true;
@@ -28,8 +34,7 @@ class _HomeState extends State<Home> {
   @override void initState() {
     super.initState();
 
-    generateLinks();
-    generateCategories();
+    fetchCategories();
   }
 
   @override
@@ -66,7 +71,14 @@ class _HomeState extends State<Home> {
               isGrid: isGrid,
             ),
 
-            CustomList(categories: categoryList, links: linkList, isGrid: isGrid),
+            // rever
+            Observer(
+              builder: (_) => CustomList(
+                categories: homeStore.categories, 
+                links: homeStore.links, 
+                isGrid: isGrid
+              )
+            ),
             //EmptyState()
           ],
         ),
@@ -180,69 +192,19 @@ class _HomeState extends State<Home> {
     Navigator.pop(context);
   }
 
-  void generateLinks() {
-    final linkJson = [
-      {
-        "id": 1,
-        "title": "",
-        "link": "https://teste.com",
-        "favorite": false,
-        "user_id": 1,
-        "category_id": 1
-      },
-      {
-        "id": 2,
-        "title": "",
-        "link": "https://teste2.com",
-        "favorite": false,
-        "user_id": 1,
-        "category_id": 1
-      },
-      {
-        "id": 3,
-        "title": "",
-        "link": "https://teste3.com",
-        "favorite": false,
-        "user_id": 1,
-        "category_id": 2
-      },
-    ];
+  void fetchCategories() async {
+    try {
+      final categoriesResponse =  await _homeController.fetchCategories();
+      final linksResponse = await _homeController.fetchLinks();
 
-    for (var json in linkJson) {
-      final LinkModel link = LinkModel.fromJson(json);
-
-      linkList.add(link);
-    }
-  }
-
-  void generateCategories() {
-    final categoryJson = [
-      {
-        "id": 1,
-        "title": 'Design',
-      },
-      {
-        "id": 2,
-        "title": 'Inspirações',
-      },
-      {
-        "id": 3,
-        "title": 'Teste Categoria 1',
-      },
-      {
-        "id": 4,
-        "title": 'Teste Categoria 2',
-      },
-      {
-        "id": 5,
-        "title": 'Teste Categoria 3',
-      },
-    ];
-
-    for (var json in categoryJson) {
-      final CategoryModel category = CategoryModel.fromJson(json);
-
-      categoryList.add(category);
+      homeStore.setCategories(categoriesResponse);
+      homeStore.setLinks(linksResponse);
+    } catch(error) {
+      CustomSnackBar.show(
+        context, 
+        "Erro ao recuperar categorias, por favor atualize a página.",
+        duration: 3000,
+      );
     }
   }
 }

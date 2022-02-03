@@ -3,7 +3,7 @@ import 'package:app/models/link_model.dart';
 import 'package:app/repositories/category_repository.dart';
 import 'package:app/repositories/link_repository.dart';
 
-class SaveLinkController {
+class HomeController {
   final CategoryRepository _categoryRepository = CategoryRepository();
   final LinkRepository _linkRepository = LinkRepository();
 
