@@ -92,10 +92,14 @@ class CategoryField extends StatelessWidget {
   Widget _buildCreateCategoryButton() {
     return CustomElevatedButton(
       isLoading: isLoading,
-      onPressed: createCategoryOnPressed,
+      onPressed: controller.text.isEmpty ? null : createCategoryOnPressed,
       backgroundColor: Colors.transparent,
-      color: CustomColors.purple, 
-      label: 'Criar "${controller.text}"', 
+      color: controller.text.isEmpty 
+        ? CustomColors.grey[300]
+        : CustomColors.purple, 
+      label: controller.text.isEmpty
+        ? 'Criar categoria' 
+        : 'Criar "${controller.text}"',
       fontSize: 14,
       fontWeight: FontWeight.w500, 
       iconSize: 20, 

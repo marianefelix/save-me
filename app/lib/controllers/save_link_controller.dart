@@ -16,9 +16,15 @@ class SaveLinkController {
     return response;
   }
 
-  Future createLink(Map<String, dynamic> params) async {
+  Future<CategoryModel> createLink(Map<String, dynamic> params) async {
     final response = await _linkRepository.createLink(params);
     
+    return response;
+  }
+
+  Future<List<CategoryModel>> fetchCategories() async {
+    final response = await _categoryRepository.fetchCategories();
+
     return response;
   }
 }

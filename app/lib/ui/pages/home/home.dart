@@ -1,7 +1,7 @@
 import 'package:app/controllers/home_controller.dart';
-import 'package:app/models/category_model.dart';
 import 'package:app/models/link_model.dart';
-import 'package:app/stores/HomeStore/home_store.dart';
+import 'package:app/stores/AppStore/app_store.dart';
+import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/SortRow/sort_row.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
@@ -19,7 +19,9 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-final homeStore = HomeStore();
+//final homeStore = HomeStore();
+
+final appStore =  AppStore();
 
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
@@ -57,33 +59,42 @@ class _HomeState extends State<Home> {
         padding: const EdgeInsets.only(left: 35, right: 35),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 35),
-
-            const HomeTitle(),
-
-            SortRow(
-              sortOnPressed: () { 
-                showOptions(context);
-              },
-              selectedSortOption: selectedSortOption,
-              toggleListVisualization: toggleListVisualization,
-              isGrid: isGrid,
-            ),
-
-            // rever
-            Observer(
-              builder: (_) => CustomList(
-                categories: homeStore.categories, 
-                links: homeStore.links, 
-                isGrid: isGrid
-              )
-            ),
-            //EmptyState()
-          ],
+          children: _buildHomeChildren(context),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildHomeChildren(BuildContext context) {
+    List<Widget> children = [];
+
+    if (appStore.categories.isEmpty) {
+      children.add(const EmptyState());
+    } else {
+      children.add(const SizedBox(height: 35));
+      children.add(const HomeTitle());
+      children.add(
+        SortRow(
+          sortOnPressed: () { 
+            showOptions(context);
+          },
+          selectedSortOption: selectedSortOption,
+          toggleListVisualization: toggleListVisualization,
+          isGrid: isGrid,
+        ),
+      );
+      children.add(
+        Observer(
+          builder: (_) => CustomList(
+            categories: appStore.categories, 
+            links: appStore.links, 
+            isGrid: isGrid
+          )
+        ),
+      );
+    }
+
+    return children;
   }
 
   void toggleListVisualization() {
@@ -192,13 +203,15 @@ class _HomeState extends State<Home> {
     Navigator.pop(context);
   }
 
+  // adicionar refresh indicator
+
   void fetchCategories() async {
     try {
       final categoriesResponse =  await _homeController.fetchCategories();
       final linksResponse = await _homeController.fetchLinks();
 
-      homeStore.setCategories(categoriesResponse);
-      homeStore.setLinks(linksResponse);
+      appStore.setCategories(categoriesResponse);
+      appStore.setLinks(linksResponse);
     } catch(error) {
       CustomSnackBar.show(
         context, 

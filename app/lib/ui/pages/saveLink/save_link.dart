@@ -36,7 +36,7 @@ class _SaveLinkState extends State<SaveLink> {
   @override
   void initState() {
     super.initState();
-    generateCategories();
+    fetchCategories();
   }
 
   @override
@@ -223,37 +223,19 @@ class _SaveLinkState extends State<SaveLink> {
     );
   }
 
-  void generateCategories() {
-    // TODO: integrar com a api
+  void fetchCategories() async {
+    try {
+      final categoriesResponse =  await _saveLinkController.fetchCategories();
 
-    final categoryJson = [
-      {
-        "id": 1,
-        "title": 'Design',
-      },
-      {
-        "id": 2,
-        "title": 'Inspirações',
-      },
-      {
-        "id": 3,
-        "title": 'Teste Categoria 1',
-      },
-      {
-        "id": 4,
-        "title": 'Teste Categoria 2',
-      },
-      {
-        "id": 5,
-        "title": 'Teste Categoria 3',
-      },
-    ];
-
-    for (var json in categoryJson) {
-      final CategoryModel category = CategoryModel.fromJson(json);
-
-      categoryList.add(category);
-      searchCategoryResult.add(category);
+     setState(() {
+      categoryList = categoriesResponse;
+     });
+    } catch(error) {
+      CustomSnackBar.show(
+        context, 
+        "Erro ao recuperar categorias, tente novamente",
+        duration: 3000,
+      );
     }
   }
 
@@ -287,8 +269,6 @@ class _SaveLinkState extends State<SaveLink> {
   }
 
   void createCategoryOnPressed() async {
-    // TODO: integrar com a api
-
     try {
       setState(() {
         _isCategoryRequestLoading = true;
@@ -299,6 +279,8 @@ class _SaveLinkState extends State<SaveLink> {
       setState(() {
         searchCategoryResult = [...searchCategoryResult, response];
       });
+
+      categoryController.text = "";
 
       CustomSnackBar.show(
         context, 

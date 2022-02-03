@@ -18,16 +18,20 @@ class CategoryRepository {
     for (var category in data) {
       categories.add(category);
     }
-
+    
     return categories;
   }
 
-  Future createCategory(Map<String, String> params) async {
+  Future<CategoryModel> createCategory(Map<String, String> params) async {
     final token = await UserStorage.getToken();
     _api.options.headers['Authorization'] = 'Bearer $token';
 
     final response = await _api.post(_url, data: params);
 
-    return response;
+    CategoryModel category = CategoryModel();
+    category.id = response.data['id'];
+    category.title = response.data['title'];
+
+    return category;
   }
 }
