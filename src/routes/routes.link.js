@@ -10,7 +10,8 @@ router.put("/link/:id", midLink);
 
 const linkControllers = new LinkControllers();
 
-router.get("/link", linkControllers.index);
+router.get("/link/all", linkControllers.index);
+router.get("/link", midAuth, linkControllers.getLinksByUser);
 
 router.post("/link", linkControllers.create);
 
@@ -18,9 +19,7 @@ router.put("/link/:id", linkControllers.update);
 
 router.delete("/link/:id", linkControllers.delete);
 
-router.get("/by-user/links", midAuth, linkControllers.getLinksByUser);
-
-router.get("/by-user/links/count", midAuth, linkControllers.getLinksCount);
+router.get("/links/count", midAuth, linkControllers.getLinksCount);
 
 router.get("/links/favorites", midAuth, linkControllers.getFavoritesLink);
 

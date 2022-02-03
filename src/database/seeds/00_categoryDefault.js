@@ -8,7 +8,6 @@ exports.seed = function (knex, Promise) {
         {
           id: 0,
           title: "Geral",
-          user_id: null,
         },
       ]);
     });
