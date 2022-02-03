@@ -1,5 +1,6 @@
 class LinkModel {
   int id = 0;
+  String title = "";
   String link = "";
   bool favorite = false;
   int userId = 0;
@@ -9,6 +10,7 @@ class LinkModel {
 
   LinkModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    title = json['title'];
     link = json['link'];
     favorite = json['favorite'];
     userId = json['user_id'];
@@ -19,6 +21,7 @@ class LinkModel {
     final Map<String, dynamic> data = <String, dynamic>{};
 
     data['id'] = id;
+    data['title'] = title;
     data['link'] = link;
     data['favorite'] = favorite;
     data['user_id'] = userId;

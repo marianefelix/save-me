@@ -4,6 +4,7 @@ import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/password_field.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -424,21 +425,18 @@ class _RegistrationState extends State<Registration> {
       });
 
       await _registrationController.createUser(params);
-
+    
       Navigator.push(
         context, MaterialPageRoute(builder: (context) => const Login()));
+
+      CustomSnackBar.show(
+        context, 
+        "Usuário cadastrado com sucesso!"
+      );
     } catch(error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("Falha ao cadastrar usuário. Tente novamente!"),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
-          action: SnackBarAction(
-            textColor: CustomColors.white,
-            label: 'Fechar',
-            onPressed: () {},
-          ),
-        ),
+      CustomSnackBar.show(
+        context, 
+        "Falha ao cadastrar usuário. Tente novamente!"
       );
     } finally {
       setState(() {

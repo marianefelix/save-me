@@ -7,6 +7,7 @@ import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/password_field.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -202,20 +203,11 @@ class _LoginState extends State<Login> {
 
   void loginAction() {
     FocusScope.of(context).unfocus();
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
     if (!isFormValid()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_errorMessage),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
-          action: SnackBarAction(
-            textColor: CustomColors.white,
-            label: 'Fechar',
-            onPressed: () {},
-          ),
-        ),
+      CustomSnackBar.show(
+        context, 
+        _errorMessage
       );
     } else {
       login();
@@ -282,7 +274,7 @@ class _LoginState extends State<Login> {
 
       final response = await _loginController.login(params);
 
-      //token
+      // token
       final token = response.data['token'];
       await UserStorage.setToken(token);
 
@@ -293,17 +285,9 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const Home()));
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("Falha na autenticação. Usuário ou senha inválidos!"),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(left: 30.0, right: 30.0, bottom: 15.0),
-          action: SnackBarAction(
-            textColor: CustomColors.white,
-            label: 'Fechar',
-            onPressed: () {},
-          ),
-        ),
+      CustomSnackBar.show(
+        context, 
+        "Falha na autenticação. Usuário ou senha inválidos!",
       );
     } finally {
       setState(() {

@@ -184,6 +184,7 @@ class _HomeState extends State<Home> {
     final linkJson = [
       {
         "id": 1,
+        "title": "",
         "link": "https://teste.com",
         "favorite": false,
         "user_id": 1,
@@ -191,6 +192,7 @@ class _HomeState extends State<Home> {
       },
       {
         "id": 2,
+        "title": "",
         "link": "https://teste2.com",
         "favorite": false,
         "user_id": 1,
@@ -198,6 +200,7 @@ class _HomeState extends State<Home> {
       },
       {
         "id": 3,
+        "title": "",
         "link": "https://teste3.com",
         "favorite": false,
         "user_id": 1,

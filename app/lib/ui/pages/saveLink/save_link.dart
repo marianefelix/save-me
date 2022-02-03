@@ -1,8 +1,10 @@
+import 'package:app/controllers/save_link_controller.dart';
 import 'package:app/models/category_model.dart';
 import 'package:app/ui/pages/saveLink/components/category_field.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class SaveLink extends StatefulWidget {
@@ -28,7 +30,8 @@ class _SaveLinkState extends State<SaveLink> {
   List<CategoryModel> searchCategoryResult = [];
 
   CategoryModel selectedCategory = CategoryModel();
-
+  
+  final _saveLinkController = SaveLinkController();
 
   @override
   void initState() {
@@ -182,15 +185,15 @@ class _SaveLinkState extends State<SaveLink> {
                 ),
               )
             : CategoryField(
-              controller: categoryController, 
-              isEmpty: _isCategoryEmpty,
-              hasError: false,
-              categories: searchCategoryResult,
-              onChanged: categoryFieldOnChanged,
-              categoryChipOnSelect: categoryChipOnSelect,
-              createCategoryOnPressed: createCategoryOnPressed,
-              isLoading: _isCategoryRequestLoading,
-            ),
+                controller: categoryController, 
+                isEmpty: _isCategoryEmpty,
+                hasError: false,
+                categories: searchCategoryResult,
+                onChanged: categoryFieldOnChanged,
+                categoryChipOnSelect: categoryChipOnSelect,
+                createCategoryOnPressed: createCategoryOnPressed,
+                isLoading: _isCategoryRequestLoading,
+              ),
           
           const SizedBox(height: 50),
   
@@ -279,11 +282,62 @@ class _SaveLinkState extends State<SaveLink> {
     });
   }
 
-  void createCategoryOnPressed() {
+  void createCategoryOnPressed() async {
     // TODO: integrar com a api
 
-    setState(() {
-      _isCategoryRequestLoading = true;
-    });
+    try {
+      setState(() {
+        _isCategoryRequestLoading = true;
+      });
+
+      final response = await _saveLinkController.createCategory(categoryController.text);
+
+      setState(() {
+        searchCategoryResult = [...searchCategoryResult, response];
+      });
+
+      CustomSnackBar.show(
+        context, 
+        "Categoria criada com sucesso!", 
+      );
+    } catch (error) {
+        CustomSnackBar.show(
+          context, 
+          "Erro ao criar categoria! Tente novamente.", 
+          duration: 3000
+        );
+    } finally {
+      setState(() {
+        _isCategoryRequestLoading = false;
+      });
+    }
+  }
+
+  void confirmOnPressed() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final params = {
+        "title": titleController.text,
+        "link": linkController.text,
+        "category_id": selectedCategory.id
+      };
+
+      await _saveLinkController.createLink(params);
+      // TODO: 
+      // fazer requisição pra recuperar listas atualizadas de categorias e links
+      // salvar resultado em store de home (criar)
+      // mostrar tela de sucesso
+    } catch (error) {
+      // TODO: 
+      // mostrar tela de erro
+      CustomSnackBar.show(context, "Erro ao salvar link! Tente novamente.");
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

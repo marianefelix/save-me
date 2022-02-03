@@ -5,14 +5,14 @@ import 'package:app/services/api.dart';
 import 'package:app/storage/user_storage.dart';
 
 class LinkRepository {
-  final api = DioClient.dio;
-  final url = '/link';
+  final _api = DioClient.dio;
+  final _url = '/link';
 
   Future<List<LinkModel>> fetchLinks() async {
     final token = await UserStorage.getToken();
-    api.options.headers['Authorization'] = 'Bearer $token)}';
+    _api.options.headers['Authorization'] = 'Bearer $token';
 
-    final response = await api.get(url);
+    final response = await _api.get(_url);
     final data = response.data as List;
 
     List<LinkModel> links = [];
@@ -24,31 +24,31 @@ class LinkRepository {
     return links;
   }
 
-  Future createLink(Map<String, String> params) async {
+  Future createLink(Map<String, dynamic> params) async {
     final token = await UserStorage.getToken();
-    api.options.headers['Authorization'] = 'Bearer $token)}';
+    _api.options.headers['Authorization'] = 'Bearer $token';
 
-    final response = await api.post(url, data: jsonEncode(params));
+    final response = await _api.post(_url, data: jsonEncode(params));
 
     return response;
   }
 
   Future updateLink(LinkModel params) async {
     final token = await UserStorage.getToken();
-    final putUrl = url + params.id.toString();
-    api.options.headers['Authorization'] = 'Bearer $token)}';
+    final putUrl = _url + params.id.toString();
+    _api.options.headers['Authorization'] = 'Bearer $token';
 
-    final response = await api.put(putUrl, data: params.toJson());
+    final response = await _api.put(putUrl, data: params.toJson());
 
     return response;
   }
 
   Future deleteLink(int id) async {
     final token = await UserStorage.getToken();
-    final deleteUrl = url + id.toString();
-    api.options.headers['Authorization'] = 'Bearer $token)}';
+    final deleteUrl = _url + id.toString();
+    _api.options.headers['Authorization'] = 'Bearer $token';
   
-    final response = await api.delete(deleteUrl);
+    final response = await _api.delete(deleteUrl);
 
     return response;
   }

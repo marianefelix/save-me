@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/models/category_model.dart';
 import 'package:app/services/api.dart';
 import 'package:app/storage/user_storage.dart';
@@ -10,7 +8,7 @@ class CategoryRepository {
 
   Future<List<CategoryModel>> fetchCategories() async {
     final token = await UserStorage.getToken();
-    _api.options.headers['Authorization'] = 'Bearer $token)}';
+    _api.options.headers['Authorization'] = 'Bearer $token';
 
     final response = await _api.get(_url);
     final data = response.data as List;
@@ -26,9 +24,9 @@ class CategoryRepository {
 
   Future createCategory(Map<String, String> params) async {
     final token = await UserStorage.getToken();
-    _api.options.headers['Authorization'] = 'Bearer $token)}';
+    _api.options.headers['Authorization'] = 'Bearer $token';
 
-    final response = await _api.post(_url, data: jsonEncode(params));
+    final response = await _api.post(_url, data: params);
 
     return response;
   }
