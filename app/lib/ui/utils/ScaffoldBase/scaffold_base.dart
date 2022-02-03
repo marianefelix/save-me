@@ -83,7 +83,7 @@ class ScaffoldBase extends StatelessWidget {
       ),
       backgroundColor: CustomColors.white,
       builder: (BuildContext bc) {
-        return const Scaffold(body: SaveLink());
+        return const SaveLink();
       }
     );
   }
