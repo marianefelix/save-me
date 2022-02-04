@@ -3,10 +3,11 @@ const ajv = new Ajv();
 const categorySchema = require("../schema/schema.category");
 
 function validarCategoria(request, response, next) {
-  const { title } = request.body;
+  const { title, user_id } = request.body;
 
   const categoryInsert = {
     title,
+    user_id,
   };
 
   const validate = ajv.compile(categorySchema);
