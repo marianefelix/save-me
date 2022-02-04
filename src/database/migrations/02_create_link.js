@@ -1,7 +1,7 @@
 exports.up = async (knex) =>
   knex.schema.createTable("link", (table) => {
     table.increments("id").primary();
-    table.string("titulo").notNullable().defaultTo("");
+    table.string("title").notNullable().defaultTo("");
     table.string("link").notNullable();
     table.boolean("favorite").notNullable().defaultTo(false);
 
