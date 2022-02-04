@@ -8,7 +8,7 @@ class LinkControllers {
   }
   async create(request, response) {
     try {
-      const { titulo, link, favorite, category_id } = request.body;
+      const { title, link, favorite, category_id } = request.body;
 
       const validCategory = await knex("category")
         .where("id", category_id)
@@ -20,7 +20,7 @@ class LinkControllers {
         validCategory.user_id === null
       ) {
         const link_insert = {
-          titulo,
+          title,
           link,
           favorite,
           user_id: request.user.sub,
@@ -46,10 +46,10 @@ class LinkControllers {
   async update(request, response) {
     try {
       const id = request.params;
-      const { titulo, link, favorite, user_id, category_id } = request.body;
+      const { title, link, favorite, user_id, category_id } = request.body;
 
       const linkUpdate = {
-        titulo,
+        title,
         link,
         favorite,
         user_id,
