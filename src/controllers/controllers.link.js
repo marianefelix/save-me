@@ -10,18 +10,32 @@ class LinkControllers {
     try {
       const { titulo, link, favorite, category_id } = request.body;
 
-      const link_insert = {
-        titulo,
-        link,
-        favorite,
-        user_id: request.user.sub,
-        category_id,
-      };
+      const validCategory = await knex("category")
+        .where("id", category_id)
+        .select()
+        .first();
 
-      await knex("link").insert(link_insert);
+      if (
+        validCategory.user_id === request.user.sub ||
+        validCategory.user_id === null
+      ) {
+        const link_insert = {
+          titulo,
+          link,
+          favorite,
+          user_id: request.user.sub,
+          category_id,
+        };
 
-      return response.status(200).json({
-        link_insert,
+        await knex("link").insert(link_insert);
+
+        return response.status(200).json({
+          link_insert,
+        });
+      }
+
+      return response.status(400).json({
+        error: "Usuário não possui está categoria!",
       });
     } catch (err) {
       return response.status(400).json({

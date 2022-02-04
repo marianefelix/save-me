@@ -10,7 +10,9 @@ router.put("/category/:id", midCategory);
 
 const categoryControllers = new CategoryControllers();
 
-router.get("/category", midAuth, categoryControllers.index);
+router.get("/category", midAuth, categoryControllers.getCategoriesUser);
+
+router.get("/category/user", midAuth, categoryControllers.index);
 
 router.get("/category/count", midAuth, categoryControllers.getCategoriesCount);
 

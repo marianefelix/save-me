@@ -1,12 +1,10 @@
 const knex = require("../database/index");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 class CategoryControllers {
-  async index(request, response) {
+  async getCategoriesUser(request, response) {
     const id = request.user.sub;
 
-    const linksUsuario = await knex("link").where("id", id).select();
+    const linksUsuario = await knex("link").where("user_id", id).select();
 
     let idsCategorias = [];
 
@@ -19,13 +17,25 @@ class CategoryControllers {
     let categoriesUser = [];
 
     for (var idCategoria of idsCategorias) {
-      const categoria = await knex("category")
-        .where("id", idCategoria)
-        .select();
-      categoriesUser.push(categoria);
+      const category = await knex("category").where("id", idCategoria).select();
+      category.map((categoria) => {
+        let categoriaInsert = {
+          id: categoria.id,
+          title: categoria.title,
+          user_id: categoria.user_id,
+        };
+        categoriesUser.push(categoriaInsert);
+      });
     }
 
     return response.status(200).json(categoriesUser);
+  }
+  async index(request, response) {
+    const id = request.user.sub;
+
+    const categoriesUser = await knex("category").where("user_id", id).select();
+
+    return response.json(categoriesUser);
   }
   async create(request, response) {
     try {
@@ -33,6 +43,7 @@ class CategoryControllers {
 
       const category_insert = {
         title,
+        user_id: request.user.sub,
       };
 
       await knex("category")
@@ -92,27 +103,9 @@ class CategoryControllers {
   async getCategoriesCount(request, response) {
     const id = request.user.sub;
 
-    const linksUsuario = await knex("link").where("id", id).select();
+    const categoriesUser = await knex("category").where("user_id", id).select();
 
-    let idsCategorias = [];
-
-    linksUsuario.map((link) => {
-      if (!idsCategorias.includes(link.category_id)) {
-        idsCategorias.push(link.category_id);
-      }
-    });
-
-    let categoriesUser = [];
-
-    for (var idCategoria of idsCategorias) {
-      const categoria = await knex("category")
-        .where("id", idCategoria)
-        .select();
-      categoriesUser.push(categoria);
-    }
-
-    return response.status(200).json(categoriesUser.length);
+    return response.json(categoriesUser.length);
   }
 }
-
 module.exports = CategoryControllers;

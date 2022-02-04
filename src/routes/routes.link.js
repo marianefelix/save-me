@@ -19,14 +19,10 @@ router.put("/link/:id", linkControllers.update);
 
 router.delete("/link/:id", linkControllers.delete);
 
-router.get("/links/count", midAuth, linkControllers.getLinksCount);
+router.get("/link/count", midAuth, linkControllers.getLinksCount);
 
-router.get("/links/favorites", midAuth, linkControllers.getFavoritesLink);
+router.get("/link/favorites", midAuth, linkControllers.getFavoritesLink);
 
-router.get(
-  "/links/favorites/count",
-  midAuth,
-  linkControllers.getFavoritesCount
-);
+router.get("/link/favorites/count", midAuth, linkControllers.getFavoritesCount);
 
 module.exports = router;
