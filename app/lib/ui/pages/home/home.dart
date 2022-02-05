@@ -17,12 +17,11 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-//final appStore =  AppStore();
+final appStore = AppStore();
 
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
 
-  List<LinkModel> linkList = [];
   final _homeController = HomeController();
 
   bool _isGrid = true;
@@ -32,7 +31,6 @@ class _HomeState extends State<Home> {
 
   @override void initState() {
     super.initState();
-
     fetchCategories();
   }
 
@@ -49,8 +47,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final appStore = Provider.of<AppStore>(context, listen: false);
-
     return ScaffoldBase(
       searchController: searchController,
       searchOnChanged: searchOnChanged,
@@ -58,13 +54,13 @@ class _HomeState extends State<Home> {
         padding: const EdgeInsets.only(left: 35, right: 35),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: _buildHomeChildren(context, appStore.categories, appStore.links),
+          children: _buildHomeChildren(context),
         ),
       ),
     );
   }
 
-  List<Widget> _buildHomeChildren(BuildContext context, categories, links) {
+  List<Widget> _buildHomeChildren(BuildContext context) {
     List<Widget> children = [];
 
     if (_isLoading) {
@@ -103,8 +99,8 @@ class _HomeState extends State<Home> {
       );
       children.add(
         CustomList(
-          categories: categories, 
-          links: links, 
+          categories: appStore.categories,
+          links: appStore.links, 
           isGrid: _isGrid
         )
       );
@@ -126,8 +122,6 @@ class _HomeState extends State<Home> {
   }
 
   void fetchCategories() async {
-    final appStore = Provider.of<AppStore>(context, listen: false);
-  
     try {
       final categoriesResponse =  await _homeController.fetchCategories();
       final linksResponse = await _homeController.fetchLinks();
