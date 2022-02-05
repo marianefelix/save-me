@@ -106,18 +106,15 @@ class _ProfileState extends State<Profile> {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: SizedBox(
-                          child: 
-                            Text(
-                              appStore.user.name,
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: CustomColors.grey[500],
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
+                      Text(
+                        getUserName(),
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: CustomColors.grey[500],
+                          fontWeight: FontWeight.bold
                         ),
                       ),
 
@@ -329,6 +326,16 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  String getUserName() {
+    final userName = appStore.user.name.split(' ');
+
+    if (userName.length > 1) {
+      return userName[0] + '\n' + userName[1];
+    }
+
+    return appStore.user.name;
+  }
+
   void fetchStatistics() async {
     try {
       final categoriesLength = await _profileController.fetchCategoriesLength();
@@ -343,7 +350,6 @@ class _ProfileState extends State<Profile> {
         };
       });
     } catch(error) {
-      print(error);
       CustomSnackBar.show(context, "Erro ao recuperar dados do usuário");
     } finally {
       setState(() {

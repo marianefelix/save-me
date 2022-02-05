@@ -57,7 +57,7 @@ class Header extends StatelessWidget {
                     color: CustomColors.purple
                   )
                 ),
-                padding: const EdgeInsets.all(11),
+                padding: const EdgeInsets.all(8),
                 primary: CustomColors.purple[50],
                 elevation: 0,
               ),
