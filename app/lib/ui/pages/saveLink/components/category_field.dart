@@ -12,8 +12,9 @@ class CategoryField extends StatelessWidget {
     required this.categories,
     required this.categoryChipOnSelect, 
     required this.createCategoryOnPressed, 
-    required this.isLoading,
+    required this.isCreateCategoryLoading,
     this.onChanged, 
+    required this.isFetchCategoriesLoading, 
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -21,7 +22,8 @@ class CategoryField extends StatelessWidget {
   final void Function(String)? onChanged;
   final void Function(CategoryModel) categoryChipOnSelect;
   final void Function() createCategoryOnPressed;
-  final bool isLoading;
+  final bool isCreateCategoryLoading;
+  final bool isFetchCategoriesLoading;
   final bool hasError;
   final List<CategoryModel> categories;
 
@@ -75,13 +77,15 @@ class CategoryField extends StatelessWidget {
             ),
           ),
 
-          // adicionar scroll
-          Padding(
+          Container(
+            height: isFetchCategoriesLoading || categories.isEmpty ? null : 120,
             padding: const EdgeInsets.all(15),
-            child: Wrap(
-              spacing: 5,
-              runSpacing: 10,
-              children: _buildCategoryButton()
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 5,
+                runSpacing: 10,
+                children: _buildCategoryButton()
+              ),
             ),
           )
         ],
@@ -91,7 +95,7 @@ class CategoryField extends StatelessWidget {
 
   Widget _buildCreateCategoryButton() {
     return CustomElevatedButton(
-      isLoading: isLoading,
+      isLoading: isCreateCategoryLoading,
       onPressed: controller.text.isEmpty ? null : createCategoryOnPressed,
       backgroundColor: Colors.transparent,
       color: controller.text.isEmpty 
@@ -111,7 +115,22 @@ class CategoryField extends StatelessWidget {
   List<Widget> _buildCategoryButton() {
     List<Widget> categoryButtons = [];
 
-    if (categories.isEmpty) {
+    if (isFetchCategoriesLoading) {
+      categoryButtons.add(
+        const Center(
+          child: SizedBox(
+            height: 30,
+            width: 30,
+            child: Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: CustomColors.purple,
+              ),
+            ),
+          ),
+        )
+      );
+    } else if (categories.isEmpty) {
       final createButton = _buildCreateCategoryButton();
       categoryButtons.add(createButton);
     } else {
@@ -125,7 +144,7 @@ class CategoryField extends StatelessWidget {
               return CustomColors.purple[200];
             }),
             padding: MaterialStateProperty.resolveWith((_) { 
-              return const EdgeInsets.all(18);
+              return const EdgeInsets.only(left: 8, right: 8);
             }),
             elevation: MaterialStateProperty.resolveWith((_) { 
               return 0;
@@ -138,7 +157,11 @@ class CategoryField extends StatelessWidget {
           ),
           child: Text(
             category.title,
-            style: const TextStyle(color: CustomColors.purple),
+            style: const TextStyle(
+              color: CustomColors.purple,
+              fontSize: 12,
+              fontWeight: FontWeight.normal
+            ),
           ),
         );
 

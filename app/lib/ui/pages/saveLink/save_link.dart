@@ -1,6 +1,7 @@
 import 'package:app/controllers/save_link_controller.dart';
 import 'package:app/models/category_model.dart';
 import 'package:app/ui/pages/LinkAction/link_action.dart';
+import 'package:app/ui/pages/home/home.dart';
 import 'package:app/ui/pages/saveLink/components/category_field.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
@@ -25,7 +26,8 @@ class _SaveLinkState extends State<SaveLink> {
   bool _isCategoryEmpty = true;
 
   bool _isLoading = false;
-  bool _isCategoryRequestLoading = false;
+  bool _isCreateCategoryLoading = false;
+  bool _isFetchCategoriesLoading = true;
   bool _showSucessMessage = false;
   bool _showErrorMessage = false;
 
@@ -55,7 +57,7 @@ class _SaveLinkState extends State<SaveLink> {
     _isCategoryEmpty = true;
 
     _isLoading = false;
-    _isCategoryRequestLoading = false;
+    _isCreateCategoryLoading = false;
     selectedCategory = CategoryModel();
 
 
@@ -71,9 +73,8 @@ class _SaveLinkState extends State<SaveLink> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
-      child: Scaffold(
-        backgroundColor: CustomColors.white,
-        body: Column(
+      child: SafeArea(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -86,7 +87,11 @@ class _SaveLinkState extends State<SaveLink> {
                   size: 25
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(context, 
+                    MaterialPageRoute(
+                      builder: (context) => const Home()
+                    )
+                  );
                 },
               ),
             ),
@@ -129,7 +134,7 @@ class _SaveLinkState extends State<SaveLink> {
         const SizedBox(height: 30),
 
         Text(
-          "Título:", 
+          "Título", 
           style: TextStyle(
           color: CustomColors.grey[500],
           fontSize: 15,
@@ -159,7 +164,7 @@ class _SaveLinkState extends State<SaveLink> {
         const SizedBox(height: 15),
         
         Text(
-          "Link:", 
+          "Link", 
           style: TextStyle(
           color: CustomColors.grey[500],
           fontSize: 15,
@@ -189,7 +194,7 @@ class _SaveLinkState extends State<SaveLink> {
         const SizedBox(height: 15),
 
         Text(
-          "Categoria:", 
+          "Categoria", 
           style: TextStyle(
             color: CustomColors.grey[500],
             fontSize: 15,
@@ -202,7 +207,7 @@ class _SaveLinkState extends State<SaveLink> {
         selectedCategory.id != 0 
           ? Chip(
               backgroundColor: CustomColors.purple,
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(5),
               deleteIcon: const Icon(
                 Icons.close, 
                 color: CustomColors.white,
@@ -227,16 +232,17 @@ class _SaveLinkState extends State<SaveLink> {
               onChanged: categoryFieldOnChanged,
               categoryChipOnSelect: categoryChipOnSelect,
               createCategoryOnPressed: createCategoryOnPressed,
-              isLoading: _isCategoryRequestLoading,
+              isCreateCategoryLoading: _isCreateCategoryLoading,
+              isFetchCategoriesLoading: _isFetchCategoriesLoading,
             ),
         
         const SizedBox(height: 50),
 
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: Align(
-              alignment: Alignment.bottomRight,
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 20.0),
               child: PrimaryButton(
                 isLoading: _isLoading,
                 label: "Confirmar",
@@ -262,7 +268,7 @@ class _SaveLinkState extends State<SaveLink> {
   }
 
   void fetchCategories() async {
-    try {
+    try {    
       final categoriesResponse =  await _saveLinkController.fetchCategoriesByUser();
 
      setState(() {
@@ -275,6 +281,10 @@ class _SaveLinkState extends State<SaveLink> {
         "Erro ao recuperar categorias, tente novamente",
         duration: 3000,
       );
+    } finally {
+      setState(() {
+        _isFetchCategoriesLoading = false;
+      });
     }
   }
 
@@ -310,7 +320,7 @@ class _SaveLinkState extends State<SaveLink> {
   void createCategoryOnPressed() async {
     try {
       setState(() {
-        _isCategoryRequestLoading = true;
+        _isCreateCategoryLoading = true;
       });
 
       final response = await _saveLinkController.createCategory(categoryController.text);
@@ -337,7 +347,7 @@ class _SaveLinkState extends State<SaveLink> {
         );
     } finally {
       setState(() {
-        _isCategoryRequestLoading = false;
+        _isCreateCategoryLoading = false;
       });
     }
   }
