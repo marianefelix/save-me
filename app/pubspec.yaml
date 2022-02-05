@@ -71,6 +71,10 @@ flutter:
     - assets/images/logo.svg
     - assets/images/logo_2.svg
     - assets/images/empty_state.svg
+    - assets/images/alert-circle.svg
+    - assets/images/alert-circle.png
+    - assets/images/check-circle.svg
+    - assets/images/help.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

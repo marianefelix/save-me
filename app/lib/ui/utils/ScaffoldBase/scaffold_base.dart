@@ -59,7 +59,7 @@ class ScaffoldBase extends StatelessWidget {
         height: 67,
         child: FloatingActionButton(
           onPressed: () {
-            _addLinkModelBottom(context);
+            _addLinkModalBottom(context);
           },
           backgroundColor: CustomColors.purple,
           child: const Icon(Icons.add_rounded, size: 35.0),
@@ -69,7 +69,7 @@ class ScaffoldBase extends StatelessWidget {
     );
   }
 
-  void _addLinkModelBottom(context) {
+  void _addLinkModalBottom(context) {
     FocusManager.instance.primaryFocus?.unfocus();
 
     showModalBottomSheet(

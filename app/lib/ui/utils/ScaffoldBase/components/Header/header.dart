@@ -1,8 +1,10 @@
+import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/profile/profile.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Header extends StatelessWidget {
   const Header({ 
@@ -16,6 +18,8 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appStore =  Provider.of<AppStore>(context, listen: false);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(top: 20, bottom: 10, left: 35, right: 20),
@@ -23,26 +27,27 @@ class Header extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            /*SvgPicture.asset(
-              'assets/images/logo.svg', 
-              fit: BoxFit.contain,
-              height: 40,
-            ),*/
 
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.68,
-              height: 42,
-              child: CustomTextField(
-                controller: searchController,
-                labelText: "Pesquise seus links",
-                contentPadding: EdgeInsets.zero,
-                icon: Icons.search,
-                isEmpty: searchController.text.isEmpty,
-                hasError: false,
-                onChanged: onChanged,
-              ),
-            ),
-
+            appStore.categories.isEmpty 
+              ? SvgPicture.asset(
+                  'assets/images/logo.svg', 
+                  fit: BoxFit.contain,
+                  height: 40,
+                )
+              : SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.68,
+                  height: 42,
+                  child: CustomTextField(
+                    controller: searchController,
+                    labelText: "Pesquise seus links",
+                    contentPadding: EdgeInsets.zero,
+                    icon: Icons.search,
+                    isEmpty: searchController.text.isEmpty,
+                    hasError: false,
+                    onChanged: onChanged,
+                  ),
+                ),
+                
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context,

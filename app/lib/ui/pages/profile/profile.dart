@@ -1,5 +1,5 @@
 import 'package:app/storage/user_storage.dart';
-import 'package:app/store/app_store.dart';
+import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/login/login.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:flutter/material.dart';

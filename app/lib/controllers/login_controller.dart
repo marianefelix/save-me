@@ -18,7 +18,7 @@ class LoginController {
     decodedToken = JwtDecoder.decode(token);
 
     user.id = decodedToken["sub"];
-    user.name = "Mariane Felix";
+    user.name = decodedToken["name"];
     user.email = decodedToken["email"];
 
     return user;

@@ -38,6 +38,28 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setCategories(List<CategoryModel> categories) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setCategories');
+    try {
+      return super.setCategories(categories);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setLinks(List<LinkModel> links) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setLinks');
+    try {
+      return super.setLinks(links);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 user: ${user}

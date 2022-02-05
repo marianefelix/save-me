@@ -1,12 +1,14 @@
-import 'package:app/models/category_model.dart';
+import 'package:app/controllers/home_controller.dart';
 import 'package:app/models/link_model.dart';
+import 'package:app/stores/AppStore/app_store.dart';
+import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
-import 'package:app/ui/pages/home/components/SortRow/sort_row.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
-import 'package:app/ui/utils/ElevatedButton/elevated_button.dart';
 import 'package:app/ui/utils/ScaffoldBase/scaffold_base.dart';
 import 'package:app/ui/utils/custom_colors.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({ Key? key }) : super(key: key);
@@ -15,21 +17,23 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
+//final appStore =  AppStore();
+
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
 
-  List<CategoryModel> categoryList = [];
   List<LinkModel> linkList = [];
+  final _homeController = HomeController();
 
-  bool isGrid = true;
-  bool isSearchEmpty = true;
-  String selectedSortOption = 'date';
+  bool _isGrid = true;
+  bool _isSearchEmpty = true;
+  bool _isLoading = true;
+  bool _categoryListIsEmpty = true;
 
   @override void initState() {
     super.initState();
 
-    generateLinks();
-    generateCategories();
+    fetchCategories();
   }
 
   @override
@@ -45,6 +49,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final appStore = Provider.of<AppStore>(context, listen: false);
+
     return ScaffoldBase(
       searchController: searchController,
       searchOnChanged: searchOnChanged,
@@ -52,194 +58,96 @@ class _HomeState extends State<Home> {
         padding: const EdgeInsets.only(left: 35, right: 35),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 35),
-
-            const HomeTitle(),
-
-            SortRow(
-              sortOnPressed: () { 
-                showOptions(context);
-              },
-              selectedSortOption: selectedSortOption,
-              toggleListVisualization: toggleListVisualization,
-              isGrid: isGrid,
-            ),
-
-            CustomList(categories: categoryList, links: linkList, isGrid: isGrid),
-            //EmptyState()
-          ],
+          children: _buildHomeChildren(context, appStore.categories, appStore.links),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildHomeChildren(BuildContext context, categories, links) {
+    List<Widget> children = [];
+
+    if (_isLoading) {
+      children.add(
+        const Center(
+          child: SizedBox(
+            height: 40,
+            width: 40,
+            child: Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 4,
+                color: CustomColors.purple,
+              ),
+            ),
+          ),
+        )
+      );
+    } else if (_categoryListIsEmpty) {
+      children.add(const EmptyState());
+    } else {
+      children.add(const SizedBox(height: 35));
+      children.add(const HomeTitle());
+      children.add(
+        Align(
+          alignment: Alignment.topRight,
+          child: IconButton(
+            onPressed: toggleListVisualization,
+            icon: Icon(
+              _isGrid 
+                ? Icons.list 
+                : Icons.grid_view
+            ),
+            color: CustomColors.grey[500],
+          ),
+        ),
+      );
+      children.add(
+        CustomList(
+          categories: categories, 
+          links: links, 
+          isGrid: _isGrid
+        )
+      );
+    }
+
+    return children;
   }
 
   void toggleListVisualization() {
     setState(() {
-      isGrid = !isGrid;
+      _isGrid = !_isGrid;
     });
-  }
-
-  void showOptions(BuildContext context) {
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.0), 
-          topRight: Radius.circular(30.0)
-        ),
-      ),
-      backgroundColor: CustomColors.white,
-      builder: (context) {
-        return BottomSheet(
-          onClosing: (){},
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30.0), 
-              topRight: Radius.circular(30.0)
-            ),
-          ),
-          backgroundColor: CustomColors.white,
-          builder: (context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30, bottom: 15),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Ordenar por",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: CustomColors.grey[500]
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  CustomElevatedButton(
-                    onPressed: (){
-                      handleSortOptionSelected("date");
-                    },
-                    padding: const EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                    label: "Data de criação",
-                    fontSize: 14,
-                    icon: Icons.calendar_today,
-                    iconSize: 18,
-                    color: selectedSortOption == 'date' 
-                      ? CustomColors.purple
-                      : CustomColors.grey[500],
-                    backgroundColor: selectedSortOption == 'date' 
-                      ? CustomColors.purple[50]
-                      : CustomColors.white,
-                  ),
-          
-                  CustomElevatedButton(
-                    onPressed: (){
-                      handleSortOptionSelected("alpha");
-                    },
-                    padding: const EdgeInsets.only(left: 30, right: 30, top: 15, bottom: 15),
-                    label: "Ordem alfabética",
-                    fontSize: 14,
-                    icon: Icons.sort_by_alpha_outlined,
-                    iconSize: 18,
-                    color: selectedSortOption == 'alpha' 
-                      ? CustomColors.purple
-                      : CustomColors.grey[500],
-                    backgroundColor: selectedSortOption == 'alpha' 
-                      ? CustomColors.purple[50]
-                      : CustomColors.white,
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
   }
 
   void searchOnChanged(String value) {
     setState(() {
-      isSearchEmpty = value.isEmpty;
+      _isSearchEmpty = value.isEmpty;
     });
   }
 
-  void handleSortOptionSelected(String orderOption) {
-    setState(() {
-      selectedSortOption = orderOption;
-    });
+  void fetchCategories() async {
+    final appStore = Provider.of<AppStore>(context, listen: false);
+  
+    try {
+      final categoriesResponse =  await _homeController.fetchCategories();
+      final linksResponse = await _homeController.fetchLinks();
 
-    Navigator.pop(context);
-  }
+      appStore.setCategories([...categoriesResponse]);
+      appStore.setLinks([...linksResponse]);
 
-  void generateLinks() {
-    final linkJson = [
-      {
-        "id": 1,
-        "link": "https://teste.com",
-        "favorite": false,
-        "user_id": 1,
-        "category_id": 1
-      },
-      {
-        "id": 2,
-        "link": "https://teste2.com",
-        "favorite": false,
-        "user_id": 1,
-        "category_id": 1
-      },
-      {
-        "id": 3,
-        "link": "https://teste3.com",
-        "favorite": false,
-        "user_id": 1,
-        "category_id": 2
-      },
-    ];
-
-    for (var json in linkJson) {
-      final LinkModel link = LinkModel.fromJson(json);
-
-      linkList.add(link);
-    }
-  }
-
-  void generateCategories() {
-    final categoryJson = [
-      {
-        "id": 1,
-        "title": 'Design',
-      },
-      {
-        "id": 2,
-        "title": 'Inspirações',
-      },
-      {
-        "id": 3,
-        "title": 'Teste Categoria 1',
-      },
-      {
-        "id": 4,
-        "title": 'Teste Categoria 2',
-      },
-      {
-        "id": 5,
-        "title": 'Teste Categoria 3',
-      },
-    ];
-
-    for (var json in categoryJson) {
-      final CategoryModel category = CategoryModel.fromJson(json);
-
-      categoryList.add(category);
+      setState(() {
+        _categoryListIsEmpty = categoriesResponse.isEmpty;
+      });
+    } catch(error) {
+      CustomSnackBar.show(
+        context, 
+        "Erro ao recuperar categorias, por favor atualize a página.",
+        duration: 3000,
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 }
