@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 
 class CategoryField extends StatelessWidget {
   const CategoryField({ 
-      Key? key, 
-      required this.controller, 
-      required this.isEmpty, 
-      required this.hasError,
-      required this.categories,
-      required this.categoryChipOnSelect, 
-      required this.createCategoryOnPressed, 
-      required this.isLoading,
-      this.onChanged, 
-    }) : super(key: key);
+    Key? key, 
+    required this.controller, 
+    required this.isEmpty, 
+    required this.hasError,
+    required this.categories,
+    required this.categoryChipOnSelect, 
+    required this.createCategoryOnPressed, 
+    required this.isLoading,
+    this.onChanged, 
+  }) : super(key: key);
 
   final TextEditingController controller;
   final bool isEmpty;

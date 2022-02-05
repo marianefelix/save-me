@@ -8,13 +8,13 @@ class HomeController {
   final LinkRepository _linkRepository = LinkRepository();
 
   Future<List<CategoryModel>> fetchCategories() async {
-    final response = await _categoryRepository.fetchCategories();
+    final response = await _categoryRepository.getCategories();
 
     return response;
   }
 
   Future<List<LinkModel>> fetchLinks() async {
-    final response = await _linkRepository.fetchLinks();
+    final response = await _linkRepository.getLinks();
 
     return response;
   }

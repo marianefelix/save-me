@@ -6,7 +6,7 @@ class UserStorage {
   static const _tokenKey = 'token';
 
   static Future<void> setToken(String token) async {
-    _storage.write(key: _tokenKey, value: token);
+    await _storage.write(key: _tokenKey, value: token);
   }
 
   static Future<String?> getToken() async {

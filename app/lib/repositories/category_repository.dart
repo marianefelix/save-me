@@ -6,7 +6,7 @@ class CategoryRepository {
   final _api = DioClient.dio;
   final _url = '/category';
 
-  Future<List<CategoryModel>> fetchCategories() async {
+  Future<List<CategoryModel>> getCategories() async {
     final token = await UserStorage.getToken();
     _api.options.headers['Authorization'] = 'Bearer $token';
 
@@ -15,7 +15,27 @@ class CategoryRepository {
 
     List<CategoryModel> categories = [];
     
-    for (var category in data) {
+    for (var categoryJson in data) {
+      final CategoryModel category = CategoryModel.fromJson(categoryJson);
+
+      categories.add(category);
+    }
+    
+    return categories;
+  }
+
+  Future<List<CategoryModel>> getCategoriesByUser() async {
+    final token = await UserStorage.getToken();
+    _api.options.headers['Authorization'] = 'Bearer $token';
+
+    final response = await _api.get(_url + '/user');
+    final data = response.data as List;
+
+    List<CategoryModel> categories = [];
+
+    for (var categoryJson in data) {
+      final CategoryModel category = CategoryModel.fromJson(categoryJson);
+  
       categories.add(category);
     }
     

@@ -281,9 +281,11 @@ class _LoginState extends State<Login> {
       // user informations
       final user = await _loginController.getUserInfos(token);
       appStore.setUser(user);
-      
-      Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const Home()));
+
+
+      await Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => const Home()));
+     
     } catch (error) {
       CustomSnackBar.show(
         context, 

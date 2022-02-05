@@ -8,7 +8,7 @@ class LinkRepository {
   final _api = DioClient.dio;
   final _url = '/link';
 
-  Future<List<LinkModel>> fetchLinks() async {
+  Future<List<LinkModel>> getLinks() async {
     final token = await UserStorage.getToken();
     _api.options.headers['Authorization'] = 'Bearer $token';
 
@@ -17,8 +17,9 @@ class LinkRepository {
 
     List<LinkModel> links = [];
     
-    for (var linkItem in data) {
-      links.add(linkItem);
+    for (var linkJson in data) {
+      final LinkModel link = LinkModel.fromJson(linkJson);
+      links.add(link);
     }
 
     return links;
