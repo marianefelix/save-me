@@ -11,6 +11,7 @@ class PrimaryButton extends StatelessWidget {
     this.verticalPadding, 
     this.backgroundColor, 
     this.textColor, 
+    this.elevation, 
   }) : super(key: key);
 
   final String label;
@@ -20,6 +21,7 @@ class PrimaryButton extends StatelessWidget {
   final double? verticalPadding;
   final Color? backgroundColor;
   final Color? textColor;
+  final double? elevation;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +78,11 @@ class PrimaryButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8)
               );
             }),
+            elevation: MaterialStateProperty.resolveWith<double?>((_) {
+              if (elevation != null) {
+                return elevation;
+              }
+            })
           ),
         ),
       )

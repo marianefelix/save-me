@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/LinkAction/components/text.dart';
 import 'package:app/ui/pages/home/home.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
@@ -23,125 +24,126 @@ class LinkAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.70,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.only(left: 30, right: 30),
             child: save
-                ? const Text("Link salvo\n com sucesso!",
-                    style: TextStyle(
-                      fontSize: 40,
-                      color: CustomColors.grey,
-                    ),
-                    textAlign: TextAlign.center)
+                ? const CustomText(text: "Link salvo com sucesso!")
                 : error
-                    ? const Text(
-                        "Erro ao salvar o link, tente novamente.",
-                        style: TextStyle(
-                          fontSize: 40,
-                          color: CustomColors.grey,
-                        ),
-                        textAlign: TextAlign.center)
-                    : delete
-                        ? const Text(
-                            "Tem certeza que\ndeseja excluir esse\n link?",
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: CustomColors.grey,
-                            ),
-                            textAlign: TextAlign.center)
-                        : const Text("Algo deu errado"),
-          ),
-          const SizedBox(height: 50,),
-          save
-              ? SvgPicture.asset(
-                  'assets/images/check-circle.svg',
-                  fit: BoxFit.contain,
-                  height: 60,
-                )
-              : delete
-                  ? SvgPicture.asset(
-                      'assets/images/help.svg',
-                      fit: BoxFit.contain,
-                      height: 60,
-                    )
-                  : error
-                      ? SvgPicture.asset(
-                          'assets/images/alert-circle.svg',
-                          fit: BoxFit.contain,
-                        )
-                      : const Text("Algo deu errado"),
-          Padding(
-            padding: const EdgeInsets.only(top: 50),
-            child: delete
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: OutlinedButton(
-                          onPressed: () {},
-                          child: const Text("Cancelar",
-                              style: TextStyle(
-                                color: CustomColors.purple,
-                                fontWeight: FontWeight.w500,
-                              )),
-                          style: ButtonStyle(backgroundColor:
-                              MaterialStateProperty.resolveWith((_) {
-                            return CustomColors.purple[50];
-                          }), side:
-                              MaterialStateProperty.resolveWith((_) {
-                            return const BorderSide(
-                                color: CustomColors.purple, width: 1);
-                          }), shape: MaterialStateProperty.resolveWith<
-                              OutlinedBorder>((_) {
-                            return RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8));
-                          }), padding:
-                              MaterialStateProperty.resolveWith((_) {
-                            return const EdgeInsets.only(
-                                left: 30,
-                                right: 30,
-                                top: 15,
-                                bottom: 15);
-                          })),
-                        )),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: PrimaryButton(
-                          isLoading: false,
-                          label: "Confirmar",
-                          backgroundColor: CustomColors.purple,
-                          textColor: CustomColors.white,
-                          width:
-                              MediaQuery.of(context).size.width * 0.30,
-                          verticalPadding: 13.0,
-                          onPressed: onConfirm,
-                        )),
-                    ],
+                ? const CustomText(
+                    text: "Erro ao salvar o link, tente novamente."
                   )
-                : PrimaryButton(
-                    isLoading: false,
-                    label: save ? "Fechar" : "Voltar",
-                    backgroundColor: CustomColors.purple[100],
-                    textColor: CustomColors.purple,
-                    width: MediaQuery.of(context).size.width * 0.30,
-                    verticalPadding: 13.0,
-                    onPressed: () {
-                      save 
-                        ? Navigator.pushReplacement(context, 
-                            MaterialPageRoute(
-                              builder: (context) => const Home()
-                            )
-                          )
-                        : onBack != null
-                        ? onBack!()
-                        : null;
-                    },
+                : delete
+                    ? const CustomText(
+                        text: "Tem certeza que deseja excluir esse link?"
+                      )
+                    : const CustomText(text: "Algo deu errado"),
+          ),
+
+          const SizedBox(height: 30),
+
+          save
+            ? SvgPicture.asset(
+                'assets/images/check-circle.svg',
+                fit: BoxFit.contain,
+              )
+            : delete
+            ? SvgPicture.asset(
+                'assets/images/help.svg',
+                fit: BoxFit.contain,
+              )
+            : error
+            ? SvgPicture.asset(
+                'assets/images/alert-circle.svg',
+                fit: BoxFit.contain,
+              )
+            : const Text("Algo deu errado"),
+
+          const SizedBox(height: 50),
+
+          delete
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(
+                          color: CustomColors.purple,
+                          fontWeight: FontWeight.w500,
+                        )
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith((_) {
+                          return CustomColors.purple[50];
+                        }),
+                        side: MaterialStateProperty.resolveWith((_) {
+                          return const BorderSide(
+                            color: CustomColors.purple, 
+                            width: 1
+                          );
+                        }),
+                        shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
+                          return RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)
+                          );
+                        }),
+                        padding: MaterialStateProperty.resolveWith((_) {
+                          return const EdgeInsets.only(
+                            left: 30,
+                            right: 30,
+                            top: 15,
+                            bottom: 15
+                          );
+                        }),
+                        elevation: MaterialStateProperty.resolveWith<double>((_) {
+                          return 0;
+                        }),
+                      ),
+                    ),
                   ),
-          )
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: PrimaryButton(
+                      isLoading: false,
+                      label: "Confirmar",
+                      width: MediaQuery.of(context).size.width * 0.30,
+                      verticalPadding: 13.0,
+                      onPressed: onConfirm,
+                    ),
+                  ),
+                ],
+              )
+            : PrimaryButton(
+                isLoading: false,
+                label: save ? "Fechar" : "Voltar",
+                backgroundColor: CustomColors.purple[50],
+                textColor: CustomColors.purple,
+                width: MediaQuery.of(context).size.width * 0.25,
+                verticalPadding: 13.0,
+                elevation: 0,
+                onPressed: () {
+                  save 
+                    ? Navigator.pushReplacement(context, 
+                        MaterialPageRoute(
+                          builder: (context) => const Home()
+                        )
+                      )
+                    : onBack != null
+                    ? onBack!()
+                    : null;
+                },
+              )
         ],
       ),
     );
