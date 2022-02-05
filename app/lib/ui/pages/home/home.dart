@@ -1,5 +1,4 @@
 import 'package:app/controllers/home_controller.dart';
-import 'package:app/models/link_model.dart';
 import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
@@ -8,7 +7,6 @@ import 'package:app/ui/utils/ScaffoldBase/scaffold_base.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({ Key? key }) : super(key: key);
@@ -17,7 +15,7 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-final appStore = AppStore();
+//final appStore = AppStore();
 
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();

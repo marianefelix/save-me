@@ -27,3 +27,6 @@ abstract class _AppStore with Store {
     this.links = links;
   }
 }
+
+AppStore _singletonAppStore = AppStore();
+AppStore get appStore => _singletonAppStore;

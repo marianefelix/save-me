@@ -3,7 +3,6 @@ import 'package:app/ui/pages/profile/profile.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Header extends StatelessWidget {
@@ -18,8 +17,6 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appStore =  Provider.of<AppStore>(context, listen: false);
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(top: 20, bottom: 10, left: 35, right: 20),

@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:app/ui/utils/background.dart';
-import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -259,8 +258,6 @@ class _LoginState extends State<Login> {
   }
 
   login() async {
-    final appStore = Provider.of<AppStore>(context, listen: false);
-
     try {
       setState(() {
         _isLoading = true;
