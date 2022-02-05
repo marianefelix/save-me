@@ -25,6 +25,24 @@ class LinkRepository {
     return links;
   }
 
+  Future<int> getLinksLength() async {
+    final token = await UserStorage.getToken();
+    _api.options.headers['Authorization'] = 'Bearer $token';
+
+    final response = await _api.get(_url + '/count');
+    
+    return response.data;
+  }
+
+  Future<int> getFavoriteLinksLength() async {
+    final token = await UserStorage.getToken();
+    _api.options.headers['Authorization'] = 'Bearer $token';
+
+    final response = await _api.get(_url + '/favorites');
+    
+    return response.data.length;
+  }
+
   Future createLink(Map<String, dynamic> params) async {
     final token = await UserStorage.getToken();
     _api.options.headers['Authorization'] = 'Bearer $token';

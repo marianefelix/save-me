@@ -1,7 +1,9 @@
+import 'package:app/controllers/profile.controller.dart';
 import 'package:app/storage/user_storage.dart';
 import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/login/login.dart';
 import 'package:app/ui/utils/custom_colors.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,9 +15,20 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final _profileController = ProfileController();
+
+  Map<String, int> userStatistics = {
+    "links": 0,
+    "favorites": 0,
+    "categories": 0
+  };
+
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    fetchStatistics();
   }
 
   @override
@@ -97,30 +110,18 @@ class _ProfileState extends State<Profile> {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Mariane",
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: CustomColors.grey[500],
-                              fontWeight: FontWeight.bold
+                      Expanded(
+                        child: SizedBox(
+                          child: 
+                            Text(
+                              appStore.user.name,
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: CustomColors.grey[500],
+                                fontWeight: FontWeight.bold
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-
-                      Row(
-                        children: [
-                          Text(
-                            'Felix',
-                            style: TextStyle(
-                              fontSize: 30,
-                              color: CustomColors.grey[500],
-                              fontWeight: FontWeight.normal
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
 
                       Row(
@@ -159,16 +160,25 @@ class _ProfileState extends State<Profile> {
                       size: 30.0,
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Text(
-                      "101",
-                      style: TextStyle(
-                        color: CustomColors.purple,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500
-                      )
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: CustomColors.purple,
+                          ),
+                        )
+                      : Text(
+                          userStatistics["links"].toString(),
+                          style: const TextStyle(
+                            color: CustomColors.purple,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500
+                          )
+                        ),
                   ),
 
                   const Text('links salvos',
@@ -198,16 +208,25 @@ class _ProfileState extends State<Profile> {
                       size: 30.0,
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Text(
-                      "10",
-                      style: TextStyle(
-                        color: CustomColors.purple,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500
-                      )
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: CustomColors.purple,
+                          ),
+                        )
+                      : Text(
+                          userStatistics["categories"].toString(),
+                          style: const TextStyle(
+                            color: CustomColors.purple,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500
+                          )
+                        ),
                   ),
 
                   const Text('categorias criadas',
@@ -238,16 +257,25 @@ class _ProfileState extends State<Profile> {
                       size: 30.0,
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Text(
-                      "25",
-                      style: TextStyle(
-                        color: CustomColors.purple,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500
-                      )
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: CustomColors.purple,
+                          ),
+                        )
+                      : Text(
+                          userStatistics["favorites"].toString(),
+                          style: const TextStyle(
+                            color: CustomColors.purple,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500
+                          )
+                        ),
                   ),
 
                   const Text('links favoritados',
@@ -303,4 +331,28 @@ class _ProfileState extends State<Profile> {
       )
     );
   }
+
+  void fetchStatistics() async {
+    try {
+      final categoriesLength = await _profileController.fetchCategoriesLength();
+      final linksLength = await _profileController.fetchLinksLength();
+      final favoritesLength = await _profileController.fetchFavoriteLinksLength();
+
+      setState(() {
+        userStatistics = {
+          "links": linksLength,
+          "categories": categoriesLength,
+          "favorites": favoritesLength
+        };
+      });
+    } catch(error) {
+      print(error);
+      CustomSnackBar.show(context, "Erro ao recuperar dados do usuário");
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
 }

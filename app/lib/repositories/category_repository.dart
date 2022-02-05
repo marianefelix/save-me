@@ -42,6 +42,15 @@ class CategoryRepository {
     return categories;
   }
 
+  Future<int> getCategoriesLength() async {
+    final token = await UserStorage.getToken();
+    _api.options.headers['Authorization'] = 'Bearer $token';
+
+    final response = await _api.get(_url + '/count');
+    
+    return response.data;
+  }
+
   Future<CategoryModel> createCategory(Map<String, String> params) async {
     final token = await UserStorage.getToken();
     _api.options.headers['Authorization'] = 'Bearer $token';

@@ -27,7 +27,6 @@ class Header extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
             appStore.categories.isEmpty 
               ? SvgPicture.asset(
                   'assets/images/logo.svg', 
@@ -53,13 +52,7 @@ class Header extends StatelessWidget {
                 Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const Profile()));
               },
-              child: const Text(
-                "M", 
-                style: TextStyle(
-                  color: CustomColors.purple,
-                  fontSize: 14,
-                )
-              ),
+              child: const Icon(Icons.person_outline, color: CustomColors.purple,),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(
                   side: BorderSide(
