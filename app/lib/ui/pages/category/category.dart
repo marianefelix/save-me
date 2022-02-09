@@ -1,5 +1,5 @@
 import 'package:app/models/link_model.dart';
-import 'package:app/ui/pages/category/components/LinkCard/link_card.dart';
+import 'package:app/ui/utils/LinkList/link_list.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -119,15 +119,7 @@ class _CategoryState extends State<Category> {
       ];
     } else {
       return [
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.only(top: 20, bottom: 20),
-            itemCount: widget.links.length,
-            itemBuilder: (context, index) {
-              return LinkCard(link: _datas[widget.links[index].link]);
-            }
-          ),
-        )
+        LinkList(links: widget.links, datas: _datas)
       ];
     }
   }
