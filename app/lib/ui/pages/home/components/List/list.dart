@@ -9,12 +9,14 @@ class CustomList extends StatelessWidget {
     Key? key, 
     required this.categories,
     required this.links,
-    required this.isGrid,
+    required this.isGrid, 
+    required this.cardOnTap,
   }) : super(key: key);
 
   final List<CategoryModel> categories;
   final List<LinkModel> links;
   final bool isGrid;
+  final void Function(BuildContext context, List<LinkModel> links, String categoryTitle) cardOnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,9 @@ class CustomList extends StatelessWidget {
               CustomCard(
                 isGrid: isGrid, 
                 title: categoryItem.title,
-                onTap: onTap,
+                onTap: () { 
+                  cardOnTap(context, categoryLinks, categoryItem.title);
+                },
                 shareOnPressed: () async {
                   shareCatagory(categoryItem.title, categoryLinks);
                 }
@@ -64,7 +68,10 @@ class CustomList extends StatelessWidget {
             return CustomCard(
               isGrid: isGrid, 
               title: categoryItem.title,
-              onTap: onTap,
+              // rever
+              onTap: () { 
+                cardOnTap(context, categoryLinks, categoryItem.title);
+              },
               shareOnPressed: () async {
                 shareCatagory(categoryItem.title, categoryLinks);
               }
@@ -85,6 +92,4 @@ class CustomList extends StatelessWidget {
 
     Share.share(linksToShare.toString());
   }
-
-  void onTap() {}
 }
