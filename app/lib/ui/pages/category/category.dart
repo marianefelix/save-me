@@ -4,6 +4,7 @@ import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:metadata_fetch/metadata_fetch.dart';
+import 'package:share/share.dart';
 
 
 class PreviewData {
@@ -82,7 +83,9 @@ class _CategoryState extends State<Category> {
                 ),
                 IconButton(
                   splashRadius: 20,
-                  onPressed: () {},
+                  onPressed: () {
+                    shareCatagory();
+                  },
                   icon: Icon(
                     Icons.share_outlined,
                     color: CustomColors.grey[500]!.withOpacity(0.8),
@@ -153,5 +156,17 @@ class _CategoryState extends State<Category> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> shareCatagory() async {
+    var linksToShare = StringBuffer();
+
+    linksToShare.write(widget.categoryTitle + '\n');
+
+    for (var linkItem in widget.links) {
+      linksToShare.write(linkItem.link + '\n');
+    }
+
+    Share.share(linksToShare.toString());
   }
 }
