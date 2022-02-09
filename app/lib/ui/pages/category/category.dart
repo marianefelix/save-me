@@ -1,6 +1,7 @@
 import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/category/components/LinkCard/link_card.dart';
 import 'package:app/ui/utils/custom_colors.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:metadata_fetch/metadata_fetch.dart';
 
@@ -26,7 +27,8 @@ class Category extends StatefulWidget {
 }
 
 class _CategoryState extends State<Category> {
-  Map<String, PreviewData> datas = {};
+  Map<String, PreviewData> _datas = {};
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -37,6 +39,9 @@ class _CategoryState extends State<Category> {
   @override
   void dispose() {
     super.dispose();
+
+    _datas = {};
+    _isLoading = true;
   }
 
   @override
@@ -64,6 +69,8 @@ class _CategoryState extends State<Category> {
             ),
 
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
                   widget.categoryTitle,
@@ -76,7 +83,6 @@ class _CategoryState extends State<Category> {
                 IconButton(
                   splashRadius: 20,
                   onPressed: () {},
-                  alignment: Alignment.topRight,
                   icon: Icon(
                     Icons.share_outlined,
                     color: CustomColors.grey[500]!.withOpacity(0.8),
@@ -84,38 +90,67 @@ class _CategoryState extends State<Category> {
                 ),
               ],
             ),
-
-            const SizedBox(height: 30),
-
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: 20, bottom: 20),
-                itemCount: widget.links.length,
-                itemBuilder: (context, index) {
-                  return LinkCard(link: datas[widget.links[index].link]);
-                }
-              ),
-            )
+            ..._buildCategoryLinks(),
           ],
         ),
       ),
     );
   }
 
+  List<Widget> _buildCategoryLinks() {
+    if (_isLoading) {
+      return [
+        const SizedBox(height: 40,),
+        const Center(
+          child: SizedBox(
+              height: 30,
+              width: 30,
+              child: Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: CustomColors.purple,
+                ),
+              ),
+            ),
+        ),
+      ];
+    } else {
+      return [
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.only(top: 20, bottom: 20),
+            itemCount: widget.links.length,
+            itemBuilder: (context, index) {
+              return LinkCard(link: _datas[widget.links[index].link]);
+            }
+          ),
+        )
+      ];
+    }
+  }
+
   void getLinkMetadata() async {
-    for (var linkItem in widget.links) {
-      final data = await MetadataFetch.extract(linkItem.link);
+    try {
+      for (var linkItem in widget.links) {
+        final data = await MetadataFetch.extract(linkItem.link);
 
-      final previewData = PreviewData();
-      previewData.title = data?.title ?? linkItem.title;
-      previewData.link = linkItem.link;
-      previewData.favorite = linkItem.favorite;
+        final previewData = PreviewData();
+        previewData.title = data?.title ?? linkItem.title;
+        previewData.link = linkItem.link;
+        previewData.favorite = linkItem.favorite;
 
+        setState(() {
+          _datas = {
+            ..._datas,
+            linkItem.link: previewData,
+          };
+        });
+      }
+    } catch(error) {
+      CustomSnackBar.show(context, "Erro ao recuperar links! Tente novamente.");
+    } finally {
       setState(() {
-        datas = {
-          ...datas,
-          linkItem.link: previewData,
-        };
+        _isLoading = false;
       });
     }
   }
