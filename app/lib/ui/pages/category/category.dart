@@ -1,34 +1,30 @@
+import 'package:app/models/category_model.dart';
 import 'package:app/models/link_model.dart';
-import 'package:app/ui/utils/LinkList/link_list.dart';
+import 'package:app/ui/pages/category/components/LinkCard/link_card.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:metadata_fetch/metadata_fetch.dart';
 import 'package:share/share.dart';
 
-
-class PreviewData {
-  String title = "";
-  String link = "";
-  bool favorite = false;
-}
-
 class Category extends StatefulWidget {
   const Category({ 
       Key? key, 
       required this.links, 
-      required this.categoryTitle,
+      required this.category,
     }) : super(key: key);
 
   final List<LinkModel> links;
-  final String categoryTitle;
+  final CategoryModel category;
 
   @override
   _CategoryState createState() => _CategoryState();
 }
 
 class _CategoryState extends State<Category> {
-  Map<String, PreviewData> _datas = {};
+  Map<int, LinkModel> _datas = {};
+  Map<int, LinkModel> selectedLink = {};
+  int selectedLinkCounter = 0;
   bool _isLoading = true;
 
   @override
@@ -42,7 +38,9 @@ class _CategoryState extends State<Category> {
     super.dispose();
 
     _datas = {};
+    selectedLink = {};
     _isLoading = true;
+    selectedLinkCounter = 0;
   }
 
   @override
@@ -74,7 +72,7 @@ class _CategoryState extends State<Category> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  widget.categoryTitle,
+                  widget.category.title,
                   style: TextStyle(
                     color: CustomColors.grey[500],
                     fontSize: 25, 
@@ -118,10 +116,93 @@ class _CategoryState extends State<Category> {
         ),
       ];
     } else {
-      return [
-        LinkList(links: widget.links, datas: _datas)
-      ];
+      List<Widget> children = [];
+      if (selectedLinkCounter > 0) {
+        children.add(const SizedBox(height: 15,));
+        children.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: CustomColors.purple[200],
+                  borderRadius: const BorderRadius.all(Radius.circular(28)),
+                ),
+                child: Center(
+                  child: Text(
+                    selectedLinkCounter.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: CustomColors.purple,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10,),
+              Text(
+                selectedLinkCounter > 1
+                ? "selecionados"
+                : "selecionado",
+                style: TextStyle(
+                  color: CustomColors.grey[500]
+                ),
+              )
+            ],
+          ),
+        );
+      }
+  
+      children.add(
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.only(top: 20, bottom: 20),
+            itemCount: widget.links.length,
+            itemBuilder: (context, index) {
+              return LinkCard(
+                link: _datas[widget.links[index].id],
+                isSelected: 
+                selectedLink[widget.links[index].id] != null 
+                  ? true : false,
+                onLongPress: onLongPressCard,
+                onTap: onTapCard,
+              );
+            }
+          ),
+        ),
+      );
+
+      return children;
     }
+  }
+
+  void onLongPressCard(int linkId) {
+    final link = _datas[linkId];
+
+    setState(() {
+      selectedLink = {
+        ...selectedLink,
+        link!.id: link,
+      };
+      selectedLinkCounter = selectedLink.length;
+    });
+  }
+
+  void onTapCard(int linkId) {
+    final newSelectedLink = {
+      ...selectedLink
+    };
+
+    newSelectedLink.remove(linkId);
+
+    setState(() {
+      selectedLink = newSelectedLink;
+      selectedLinkCounter = selectedLink.length;
+    });
   }
 
   void getLinkMetadata() async {
@@ -129,7 +210,8 @@ class _CategoryState extends State<Category> {
       for (var linkItem in widget.links) {
         final data = await MetadataFetch.extract(linkItem.link);
 
-        final previewData = PreviewData();
+        final previewData = LinkModel();
+        previewData.id = linkItem.id;
         previewData.title = data?.title ?? linkItem.title;
         previewData.link = linkItem.link;
         previewData.favorite = linkItem.favorite;
@@ -137,7 +219,7 @@ class _CategoryState extends State<Category> {
         setState(() {
           _datas = {
             ..._datas,
-            linkItem.link: previewData,
+            linkItem.id: previewData,
           };
         });
       }
@@ -153,7 +235,7 @@ class _CategoryState extends State<Category> {
   Future<void> shareCatagory() async {
     var linksToShare = StringBuffer();
 
-    linksToShare.write(widget.categoryTitle + '\n');
+    linksToShare.write(widget.category.title + '\n');
 
     for (var linkItem in widget.links) {
       linksToShare.write(linkItem.link + '\n');
