@@ -1,5 +1,6 @@
 import 'package:app/controllers/home_controller.dart';
 import 'package:app/stores/AppStore/app_store.dart';
+import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
@@ -9,7 +10,7 @@ import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  const Home({ Key? key }) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -27,7 +28,11 @@ class _HomeState extends State<Home> {
   bool _isLoading = true;
   bool _categoryListIsEmpty = true;
 
-  @override void initState() {
+  List<LinkModel> linkList = [];
+  List<LinkModel> searchLinkResult = [];
+
+  @override
+  void initState() {
     super.initState();
     fetchCategories();
   }
@@ -62,20 +67,18 @@ class _HomeState extends State<Home> {
     List<Widget> children = [];
 
     if (_isLoading) {
-      children.add(
-        const Center(
-          child: SizedBox(
-            height: 40,
-            width: 40,
-            child: Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 4,
-                color: CustomColors.purple,
-              ),
+      children.add(const Center(
+        child: SizedBox(
+          height: 40,
+          width: 40,
+          child: Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 4,
+              color: CustomColors.purple,
             ),
           ),
-        )
-      );
+        ),
+      ));
     } else if (_categoryListIsEmpty) {
       children.add(const EmptyState());
     } else {
@@ -86,22 +89,15 @@ class _HomeState extends State<Home> {
           alignment: Alignment.topRight,
           child: IconButton(
             onPressed: toggleListVisualization,
-            icon: Icon(
-              _isGrid 
-                ? Icons.list 
-                : Icons.grid_view
-            ),
+            icon: Icon(_isGrid ? Icons.list : Icons.grid_view),
             color: CustomColors.grey[500],
           ),
         ),
       );
-      children.add(
-        CustomList(
+      children.add(CustomList(
           categories: appStore.categories,
-          links: appStore.links, 
-          isGrid: _isGrid
-        )
-      );
+          links: appStore.links,
+          isGrid: _isGrid));
     }
 
     return children;
@@ -113,26 +109,22 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void searchOnChanged(String value) {
-    setState(() {
-      _isSearchEmpty = value.isEmpty;
-    });
-  }
-
   void fetchCategories() async {
     try {
-      final categoriesResponse =  await _homeController.fetchCategories();
+      final categoriesResponse = await _homeController.fetchCategories();
       final linksResponse = await _homeController.fetchLinks();
 
       appStore.setCategories([...categoriesResponse]);
       appStore.setLinks([...linksResponse]);
 
+      linkList = appStore.links;
+
       setState(() {
         _categoryListIsEmpty = categoriesResponse.isEmpty;
       });
-    } catch(error) {
+    } catch (error) {
       CustomSnackBar.show(
-        context, 
+        context,
         "Erro ao recuperar categorias, por favor atualize a página.",
         duration: 3000,
       );
@@ -141,5 +133,29 @@ class _HomeState extends State<Home> {
         _isLoading = false;
       });
     }
+  }
+
+  void searchOnChanged(String value) {
+    setState(() {
+      _isSearchEmpty = value.isEmpty;
+    });
+
+    final newList = linkList.where((link) {
+      final lowerCaseTitle = link.title.toLowerCase();
+      final lowerCaseLink = link.link.toLowerCase();
+      final lowerCaseValue = value.toLowerCase();
+
+      if (lowerCaseTitle.contains(lowerCaseValue) ||
+          lowerCaseLink.contains(lowerCaseValue)) {
+        return true;
+      }
+
+      return false;
+    }).toList();
+
+    setState(() {
+      searchLinkResult = newList;
+    });
+
   }
 }
