@@ -2,7 +2,6 @@ import 'package:app/models/category_model.dart';
 import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/category/components/LinkCard/link_card.dart';
 import 'package:app/ui/utils/custom_colors.dart';
-import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:metadata_fetch/metadata_fetch.dart';
 import 'package:share/share.dart';
@@ -45,56 +44,122 @@ class _CategoryState extends State<Category> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: Icon(
-                  Icons.close, 
-                  color: Colors.grey[500],
-                  size: 25
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+    return Stack(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          padding: const EdgeInsets.only(top: 20.0, left: 30, right: 30),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Text(
-                  widget.category.title,
-                  style: TextStyle(
-                    color: CustomColors.grey[500],
-                    fontSize: 25, 
-                    fontWeight: FontWeight.w500
-                  )
-                ),
-                IconButton(
-                  splashRadius: 20,
-                  onPressed: () {
-                    shareCatagory();
-                  },
-                  icon: Icon(
-                    Icons.share_outlined,
-                    color: CustomColors.grey[500]!.withOpacity(0.8),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.close, 
+                      color: Colors.grey[500],
+                      size: 25
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
+      
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      widget.category.title,
+                      style: TextStyle(
+                        color: CustomColors.grey[500],
+                        fontSize: 25, 
+                        fontWeight: FontWeight.w500
+                      )
+                    ),
+                    IconButton(
+                      splashRadius: 20,
+                      onPressed: () {
+                        shareCatagory();
+                      },
+                      icon: Icon(
+                        Icons.share_outlined,
+                        color: CustomColors.grey[500]!.withOpacity(0.8),
+                      ),
+                    ),
+                  ],
+                ),
+                ..._buildCategoryLinks(),
               ],
             ),
-            ..._buildCategoryLinks(),
-          ],
+          ),
         ),
-      ),
+        selectedLinkCounter > 0 
+          ? Positioned(
+            bottom: 0,
+            width: MediaQuery.of(context).size.width,
+            height: 90,
+            child: Container(
+              color: CustomColors.purple[50],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  selectedLinkCounter == 1 
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 60),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: (){},
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                Icons.edit_outlined,
+                                color: CustomColors.purple,
+                              ),
+                            ),
+                            const Text(
+                              "Editar", 
+                              style: TextStyle(
+                                color: CustomColors.purple,
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : const SizedBox(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: (){},
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.delete_outline, 
+                          color: CustomColors.purple,
+                        ),
+                      ),
+                      const Text(
+                        "Excluir", 
+                        style: TextStyle(
+                          color: CustomColors.purple,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          )
+          : const SizedBox(),
+      ],
     );
   }
 
@@ -160,8 +225,11 @@ class _CategoryState extends State<Category> {
       children.add(
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.only(top: 20, bottom: 20),
-            itemCount: widget.links.length,
+            padding: EdgeInsets.only(
+              top: 20, 
+              bottom: selectedLinkCounter > 0 ? 80 : 20
+            ),
+            itemCount: _datas.length,
             itemBuilder: (context, index) {
               return LinkCard(
                 link: _datas[widget.links[index].id],
@@ -206,16 +274,19 @@ class _CategoryState extends State<Category> {
   }
 
   void getLinkMetadata() async {
-    try {
-      for (var linkItem in widget.links) {
+    for (var linkItem in widget.links) {
+      final previewData = LinkModel();
+
+      previewData.id = linkItem.id;
+      previewData.link = linkItem.link;
+      previewData.favorite = linkItem.favorite;
+
+      try {
         final data = await MetadataFetch.extract(linkItem.link);
-
-        final previewData = LinkModel();
-        previewData.id = linkItem.id;
-        previewData.title = data?.title ?? linkItem.title;
-        previewData.link = linkItem.link;
-        previewData.favorite = linkItem.favorite;
-
+        previewData.title = data!.title ?? linkItem.title;
+      } catch(rror) {
+        // do nothing
+      } finally {
         setState(() {
           _datas = {
             ..._datas,
@@ -223,13 +294,11 @@ class _CategoryState extends State<Category> {
           };
         });
       }
-    } catch(error) {
-      CustomSnackBar.show(context, "Erro ao recuperar links! Tente novamente.");
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> shareCatagory() async {
