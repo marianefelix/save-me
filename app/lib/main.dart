@@ -13,9 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child:  MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "saveMe",
