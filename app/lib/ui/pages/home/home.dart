@@ -1,5 +1,7 @@
 import 'package:app/controllers/home_controller.dart';
+import 'package:app/models/category_model.dart';
 import 'package:app/stores/AppStore/app_store.dart';
+import 'package:app/ui/pages/category/category.dart';
 import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
@@ -96,8 +98,11 @@ class _HomeState extends State<Home> {
       );
       children.add(CustomList(
           categories: appStore.categories,
-          links: appStore.links,
-          isGrid: _isGrid));
+          links: appStore.links, 
+          isGrid: _isGrid,
+          cardOnTap: cardOnTap,
+        )
+      );
     }
 
     return children;
@@ -133,6 +138,23 @@ class _HomeState extends State<Home> {
         _isLoading = false;
       });
     }
+  }
+
+  void cardOnTap(BuildContext context, CategoryModel category) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0), 
+          topRight: Radius.circular(30.0)
+        ),
+      ),
+      backgroundColor: CustomColors.white,
+      builder: (BuildContext bc) {
+        return Category(category: category);
+      }
+    );
   }
 
   void searchOnChanged(String value) {

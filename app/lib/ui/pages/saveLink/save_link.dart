@@ -1,5 +1,6 @@
 import 'package:app/controllers/save_link_controller.dart';
 import 'package:app/models/category_model.dart';
+import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/LinkAction/link_action.dart';
 import 'package:app/ui/pages/home/home.dart';
 import 'package:app/ui/pages/saveLink/components/category_field.dart';
@@ -10,7 +11,16 @@ import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class SaveLink extends StatefulWidget {
-  const SaveLink({Key? key}) : super(key: key);
+  const SaveLink({
+    Key? key, 
+    this.onClose,
+    this.linkItem, 
+    this.category, 
+  }) : super(key: key);
+
+  final LinkModel? linkItem;
+  final CategoryModel? category;
+  final void Function()? onClose;
 
   @override
   _SaveLinkState createState() => _SaveLinkState();
@@ -42,6 +52,19 @@ class _SaveLinkState extends State<SaveLink> {
   void initState() {
     super.initState();
     fetchCategories();
+
+    if (widget.linkItem != null && widget.category != null) {
+      LinkModel link = widget.linkItem!;
+      titleController.text = link.title;
+      linkController.text = link.link;
+      selectedCategory = widget.category!;
+
+      if (link.title != "") {
+        _isTitleEmpty = false;
+      }
+
+      _isLinkEmpty = false;
+    }
   }
 
   @override
@@ -87,11 +110,7 @@ class _SaveLinkState extends State<SaveLink> {
                   size: 25
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(context, 
-                    MaterialPageRoute(
-                      builder: (context) => const Home()
-                    )
-                  );
+                 saveLinkOnClose();
                 },
               ),
             ),
@@ -102,14 +121,33 @@ class _SaveLinkState extends State<SaveLink> {
     );
   }
 
+  void saveLinkOnClose() {
+    if (widget.linkItem != null && widget.onClose != null) {
+      widget.onClose!();
+    } else {
+      Navigator.pushReplacement(context, 
+        MaterialPageRoute(
+          builder: (context) => const Home()
+        )
+      );
+    }
+  }
+
   List<Widget> _buildSaveLink() {
     if (_showSucessMessage) {
       return [
-        const LinkAction(save: true, error: false, delete: false)
+        LinkAction(
+          edit: widget.linkItem != null, 
+          save: widget.linkItem == null,
+          error: false, 
+          delete: false,
+          onClose: saveLinkOnClose,
+        )
       ];
     } else if (_showErrorMessage) {
       return [
         LinkAction(
+          edit: false,
           save: false, 
           error: true, 
           delete: false, 
@@ -121,7 +159,9 @@ class _SaveLinkState extends State<SaveLink> {
         Row(
           children: <Widget>[
             Text(
-              'Salvar link', 
+              widget.linkItem != null
+                ? 'Editar link'
+                : 'Salvar link', 
               style: TextStyle(
                 color: CustomColors.grey[500],
                 fontSize: 25, 
@@ -252,7 +292,7 @@ class _SaveLinkState extends State<SaveLink> {
                 textColor: _isLinkEmpty || selectedCategory.id == 0  
                   ? CustomColors.grey[300] 
                   : CustomColors.white,
-                width: MediaQuery.of(context).size.width * 0.30,
+                width: MediaQuery.of(context).size.width * 0.40,
                 verticalPadding: 13.0,
                 onPressed: _isLinkEmpty || selectedCategory.id == 0 
                   ? null 
@@ -335,6 +375,7 @@ class _SaveLinkState extends State<SaveLink> {
 
       categoryController.text = "";
 
+      // rever
       CustomSnackBar.show(
         context, 
         "Categoria criada com sucesso!", 
@@ -358,14 +399,20 @@ class _SaveLinkState extends State<SaveLink> {
         _isLoading = true;
       });
 
-      final params = {
+      var params = {
         "title": titleController.text,
         "link": linkController.text,
-        "favorite": false,
         "category_id": selectedCategory.id
       };
 
-      await _saveLinkController.createLink(params);
+      if (widget.linkItem != null) {
+        params["id"] = widget.linkItem!.id;
+        await _saveLinkController.editLink(params);
+      } else {
+        params["favorite"] = false;
+        await _saveLinkController.createLink(params);
+      }
+
       setState(() {
         _showSucessMessage = true;
       });

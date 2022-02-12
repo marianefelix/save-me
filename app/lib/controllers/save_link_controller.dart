@@ -22,6 +22,15 @@ class SaveLinkController {
     return response;
   }
 
+  Future editLink(Map<String, dynamic> params) async {
+    String id = params["id"].toString();
+    params.remove("id");
+
+    final response = await _linkRepository.updateLink(id, params);
+    
+    return response;
+  }
+
   Future<List<CategoryModel>> fetchCategoriesByUser() async {
     final response = await _categoryRepository.getCategoriesByUser();
 

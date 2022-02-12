@@ -52,19 +52,19 @@ class LinkRepository {
     return response;
   }
 
-  Future updateLink(LinkModel params) async {
+  Future updateLink(String id, Map<String, dynamic> params) async {
     final token = await UserStorage.getToken();
-    final putUrl = _url + params.id.toString();
+    final putUrl = _url + '/' + id;
     _api.options.headers['Authorization'] = 'Bearer $token';
 
-    final response = await _api.put(putUrl, data: params.toJson());
+    final response = await _api.put(putUrl, data: params);
 
     return response;
   }
 
   Future deleteLink(int id) async {
     final token = await UserStorage.getToken();
-    final deleteUrl = _url + id.toString();
+    final deleteUrl = _url + '/' + id.toString();
     _api.options.headers['Authorization'] = 'Bearer $token';
   
     final response = await _api.delete(deleteUrl);
