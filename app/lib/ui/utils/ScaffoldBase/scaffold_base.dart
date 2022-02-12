@@ -18,6 +18,7 @@ class ScaffoldBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: CustomColors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(90.0),

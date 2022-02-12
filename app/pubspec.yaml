@@ -74,6 +74,7 @@ flutter:
     - assets/images/logo.svg
     - assets/images/logo_2.svg
     - assets/images/empty_state.svg
+    - assets/images/not-found.svg
     - assets/images/alert-circle.svg
     - assets/images/check-circle.svg
     - assets/images/help.svg
