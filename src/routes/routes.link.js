@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/link", midAuth, midLink);
 
-router.put("/link/:id", midLink);
+router.put("/link/:id", midAuth);
 
 const linkControllers = new LinkControllers();
 

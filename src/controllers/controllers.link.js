@@ -46,17 +46,9 @@ class LinkControllers {
   async update(request, response) {
     try {
       const id = request.params;
-      const { title, link, favorite, user_id, category_id } = request.body;
+      const params = request.body;
 
-      const linkUpdate = {
-        title,
-        link,
-        favorite,
-        user_id,
-        category_id,
-      };
-
-      await knex("link").update(linkUpdate).where(id);
+      await knex("link").update(params).where(id);
 
       return response.status(200).json({
         msg: "Link alterado!",
