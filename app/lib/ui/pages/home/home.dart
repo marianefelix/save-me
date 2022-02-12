@@ -2,7 +2,6 @@ import 'package:app/controllers/home_controller.dart';
 import 'package:app/models/category_model.dart';
 import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/category/category.dart';
-import 'package:app/models/link_model.dart';
 import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
 import 'package:app/ui/pages/home/components/List/list.dart';
 import 'package:app/ui/pages/home/components/Title/title.dart';
@@ -18,11 +17,8 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-//final appStore = AppStore();
-
 class _HomeState extends State<Home> {
   TextEditingController searchController = TextEditingController();
-
   final _homeController = HomeController();
 
   bool _isGrid = true;
@@ -30,8 +26,7 @@ class _HomeState extends State<Home> {
   bool _isLoading = true;
   bool _categoryListIsEmpty = true;
 
-  List<LinkModel> linkList = [];
-  List<LinkModel> searchLinkResult = [];
+  List<CategoryModel> _searchCategoryResult = [];
 
   @override
   void initState() {
@@ -48,6 +43,13 @@ class _HomeState extends State<Home> {
 
   void clearState() {
     searchController = TextEditingController();
+
+    _isGrid = true;
+    _isSearchEmpty = true;
+    _isLoading = true;
+    _categoryListIsEmpty = true;
+
+    _searchCategoryResult = [];
   }
 
   @override
@@ -57,10 +59,17 @@ class _HomeState extends State<Home> {
       searchOnChanged: searchOnChanged,
       bodyChild: Container(
         padding: const EdgeInsets.only(left: 35, right: 35),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: _buildHomeChildren(context),
-        ),
+        height: MediaQuery.of(context).size.height,
+        child: !_isSearchEmpty && _searchCategoryResult.isEmpty
+        ? const EmptyState(
+            message: "Nenhuma categoria encotrada.",
+            subtitle: "Tente pesquisar por outros valores.",
+            imgName: "not-found",
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _buildHomeChildren(context),
+          )
       ),
     );
   }
@@ -82,27 +91,36 @@ class _HomeState extends State<Home> {
         ),
       ));
     } else if (_categoryListIsEmpty) {
-      children.add(const EmptyState());
-    } else {
-      children.add(const SizedBox(height: 35));
-      children.add(const HomeTitle());
       children.add(
-        Align(
-          alignment: Alignment.topRight,
-          child: IconButton(
-            onPressed: toggleListVisualization,
-            icon: Icon(_isGrid ? Icons.list : Icons.grid_view),
-            color: CustomColors.grey[500],
-          ),
-        ),
-      );
-      children.add(CustomList(
-          categories: appStore.categories,
-          links: appStore.links, 
-          isGrid: _isGrid,
-          cardOnTap: cardOnTap,
+        const EmptyState(
+          message: "Você ainda não salvou nenhum link.",
+          imgName: "empty_state",
         )
       );
+    } else {
+        children.add(const SizedBox(height: 35));
+        children.add(const HomeTitle());
+        children.add(
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              onPressed: toggleListVisualization,
+              icon: Icon(_isGrid ? Icons.list : Icons.grid_view),
+              color: CustomColors.grey[500],
+            ),
+          ),
+        );
+        children.add(
+          CustomList(
+            categories: 
+            _searchCategoryResult.isNotEmpty 
+              ? _searchCategoryResult 
+              : appStore.categories,
+            links: appStore.links, 
+            isGrid: _isGrid,
+            cardOnTap: cardOnTap,
+          )
+        );
     }
 
     return children;
@@ -121,8 +139,6 @@ class _HomeState extends State<Home> {
 
       appStore.setCategories([...categoriesResponse]);
       appStore.setLinks([...linksResponse]);
-
-      linkList = appStore.links;
 
       setState(() {
         _categoryListIsEmpty = categoriesResponse.isEmpty;
@@ -162,13 +178,11 @@ class _HomeState extends State<Home> {
       _isSearchEmpty = value.isEmpty;
     });
 
-    final newList = linkList.where((link) {
-      final lowerCaseTitle = link.title.toLowerCase();
-      final lowerCaseLink = link.link.toLowerCase();
+    final newList = appStore.categories.where((category) {
+      final lowerCaseTitle = category.title.toLowerCase();
       final lowerCaseValue = value.toLowerCase();
 
-      if (lowerCaseTitle.contains(lowerCaseValue) ||
-          lowerCaseLink.contains(lowerCaseValue)) {
+      if (lowerCaseTitle.contains(lowerCaseValue)) {
         return true;
       }
 
@@ -176,8 +190,7 @@ class _HomeState extends State<Home> {
     }).toList();
 
     setState(() {
-      searchLinkResult = newList;
+      _searchCategoryResult = newList;
     });
-
   }
 }
