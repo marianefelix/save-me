@@ -63,7 +63,7 @@ class LinkCard extends StatelessWidget {
               top: 0,
               child: Container(
                 width: 85,
-                height: 100,
+                height: isSelected ? 98 : 100,
                 decoration: BoxDecoration(
                   color: CustomColors.purple[300],
                   borderRadius: const BorderRadius.only(
