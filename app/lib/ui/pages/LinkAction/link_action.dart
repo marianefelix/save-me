@@ -1,5 +1,4 @@
 import 'package:app/ui/pages/LinkAction/components/text.dart';
-import 'package:app/ui/pages/home/home.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/form/primary_button.dart';
 import 'package:flutter/material.dart';
@@ -8,18 +7,22 @@ import 'package:flutter_svg/flutter_svg.dart';
 class LinkAction extends StatelessWidget {
   const LinkAction({ 
     Key? key, 
-    required this.save, 
+    required this.save,
+    required this.edit,
     required this.error, 
     required this.delete, 
     this.onBack, 
-    this.onConfirm,
+    this.onConfirm, 
+    this.onClose,
   }) : super(key: key);
 
 
   final bool save;
+  final bool edit;
   final bool error;
   final bool delete;
   final void Function()? onBack;
+  final void Function()? onClose;
   final void Function()? onConfirm;
 
   @override
@@ -32,11 +35,11 @@ class LinkAction extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 30, right: 30),
-            child: save
+            child: save || edit
                 ? const CustomText(text: "Link salvo com sucesso!")
                 : error
                 ? const CustomText(
-                    text: "Erro ao salvar o link, tente novamente."
+                    text: "Erro ao salvar link, tente novamente."
                   )
                 : delete
                     ? const CustomText(
@@ -47,7 +50,7 @@ class LinkAction extends StatelessWidget {
 
           const SizedBox(height: 30),
 
-          save
+          save || edit
             ? SvgPicture.asset(
                 'assets/images/check-circle.svg',
                 fit: BoxFit.contain,
@@ -74,7 +77,9 @@ class LinkAction extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 15),
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child: const Text(
                         "Cancelar",
                         style: TextStyle(
@@ -119,26 +124,26 @@ class LinkAction extends StatelessWidget {
                       label: "Confirmar",
                       width: MediaQuery.of(context).size.width * 0.30,
                       verticalPadding: 13.0,
-                      onPressed: onConfirm,
+                      onPressed: () {
+                        if (onConfirm != null) {
+                          onConfirm!();
+                        }
+                      },
                     ),
                   ),
                 ],
               )
             : PrimaryButton(
                 isLoading: false,
-                label: save ? "Fechar" : "Voltar",
+                label: save || edit ? "Fechar" : "Voltar",
                 backgroundColor: CustomColors.purple[50],
                 textColor: CustomColors.purple,
                 width: MediaQuery.of(context).size.width * 0.25,
                 verticalPadding: 13.0,
                 elevation: 0,
                 onPressed: () {
-                  save 
-                    ? Navigator.pushReplacement(context, 
-                        MaterialPageRoute(
-                          builder: (context) => const Home()
-                        )
-                      )
+                  onClose != null
+                    ? onClose!()
                     : onBack != null
                     ? onBack!()
                     : null;

@@ -1,6 +1,9 @@
 import 'package:app/models/link_model.dart';
 import 'package:app/ui/utils/custom_colors.dart';
+import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LinkCard extends StatelessWidget {
   const LinkCard({ 
@@ -8,12 +11,14 @@ class LinkCard extends StatelessWidget {
       required this.link,
       required this.isSelected,
       this.onLongPress,
-      this.onTap,
+      this.onTap, 
+      required this.onFavorite,
     }) : super(key: key);
 
   final LinkModel? link;
   final void Function(int linkId)? onLongPress;
   final void Function(int linkId)? onTap;
+  final void Function(int linkId, bool value) onFavorite;
   final bool isSelected;
 
   @override
@@ -104,14 +109,17 @@ class LinkCard extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            link!.link,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                              color: CustomColors.purple,
-                              decoration: TextDecoration.underline,
-                              overflow: TextOverflow.ellipsis,
+                          child: InkWell(
+                            onTap: () => launch(link!.link),
+                            child: Text(
+                              link!.link,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                                color: CustomColors.purple,
+                                decoration: TextDecoration.underline,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
                         ),
@@ -122,7 +130,9 @@ class LinkCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         IconButton(
-                          onPressed: (){},
+                          onPressed: () {
+                            onFavorite(link!.id, !link!.favorite);
+                          },
                           padding: const EdgeInsets.all(0),
                           alignment: Alignment.centerRight,
                           icon: Icon(
@@ -135,7 +145,12 @@ class LinkCard extends StatelessWidget {
                             : CustomColors.grey[500],
                         ),
                         IconButton(
-                          onPressed: (){},
+                          onPressed: () {
+                            // testar
+                            Clipboard.setData(ClipboardData(text: link!.link)).then((_){
+                              CustomSnackBar.show(context, "Link copiado com sucesso!");
+                            });
+                          },
                           padding: const EdgeInsets.all(0),
                           icon: const Icon(
                             Icons.copy

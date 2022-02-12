@@ -1,6 +1,5 @@
 import 'package:app/controllers/home_controller.dart';
 import 'package:app/models/category_model.dart';
-import 'package:app/models/link_model.dart';
 import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/category/category.dart';
 import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
@@ -147,7 +146,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void cardOnTap(BuildContext context, List<LinkModel> links, CategoryModel category) {
+  void cardOnTap(BuildContext context, CategoryModel category) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -159,7 +158,7 @@ class _HomeState extends State<Home> {
       ),
       backgroundColor: CustomColors.white,
       builder: (BuildContext bc) {
-        return Category(links: links, category: category);
+        return Category(category: category);
       }
     );
   }

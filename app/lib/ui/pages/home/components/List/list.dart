@@ -16,11 +16,7 @@ class CustomList extends StatelessWidget {
   final List<CategoryModel> categories;
   final List<LinkModel> links;
   final bool isGrid;
-  final void Function(
-    BuildContext context, 
-    List<LinkModel> links, 
-    CategoryModel category
-  ) cardOnTap;
+  final void Function(BuildContext context, CategoryModel category) cardOnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +44,7 @@ class CustomList extends StatelessWidget {
                 isGrid: isGrid, 
                 title: categoryItem.title,
                 onTap: () { 
-                  cardOnTap(context, categoryLinks, categoryItem);
+                  cardOnTap(context, categoryItem);
                 },
                 shareOnPressed: () async {
                   shareCatagory(categoryItem.title, categoryLinks);
@@ -72,9 +68,8 @@ class CustomList extends StatelessWidget {
             return CustomCard(
               isGrid: isGrid, 
               title: categoryItem.title,
-              // rever
               onTap: () { 
-                cardOnTap(context, categoryLinks, categoryItem);
+                cardOnTap(context, categoryItem);
               },
               shareOnPressed: () async {
                 shareCatagory(categoryItem.title, categoryLinks);
