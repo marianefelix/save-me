@@ -34,6 +34,9 @@ saveMe é um aplicativo desenvolvido em Flutter que tem como funcionalidade prin
 - Visualizar conteúdo de link no navegador ou em outro app do celular;
 
 ## Desafios e aprendizados no caminho 🤯
+- Criar a própria interface do usuário;
+- Criar widgets customizados para ser fiel ao layout no figma;
+- Componentização;
 
 ## Como usar 🤔
 
