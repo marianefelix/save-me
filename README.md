@@ -5,9 +5,9 @@
 ## Tópicos
  - [Sobre 📖](#sobre-)
  - [Preview 📱](#preview-)
- - [Funcionalidades 🛠️](#Funcionalidades-)
- - [Desafios e Aprendizados no Caminho 🤯](#desafios-e-aprendizados-no-caminho-)
- - [Como Usar 🤔](#como-usar-)
+ - [Funcionalidades 🛠️](#Funcionalidades-%EF%B8%8F)
+ - [Desafios e aprendizados no caminho 🤯](#desafios-e-aprendizados-no-caminho-)
+ - [Como usar 🤔](#como-usar-)
  - [Licença 📝](#licença-)
 
 ## Sobre 📖
@@ -35,8 +35,8 @@ do saveMe é justamente salvar, organizar por categoria e compartilhar os links 
   - Links favoritados;
 - Visualizar conteúdo de link no navegador ou em outro app do celular;
 
-## Desafios e Aprendizados no Caminho 🤯
+## Desafios e aprendizados no caminho 🤯
 
-## Como Usar 🤔
+## Como usar 🤔
 
 ## Licença 📝
