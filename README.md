@@ -11,9 +11,7 @@
  - [Licença 📝](#licença-)
 
 ## Sobre 📖
-saveMe é um aplicativo desenvolvido em Flutter que tem como funcionalidade principal salvar e compartilhar links. <br>
-Hoje existem alguns apps no mercado onde é possível salvar links para não perdê-los, no entanto, um dos diferenciais <br> 
-do saveMe é justamente salvar, organizar por categoria e compartilhar os links de maneira simples, rápida e fácil. 
+saveMe é um aplicativo desenvolvido em Flutter que tem como funcionalidade principal salvar e compartilhar links. Hoje existem alguns apps no mercado onde é possível salvar links para não perdê-los, no entanto, um dos diferenciais do saveMe é justamente salvar, organizar por categoria e compartilhar os links de maneira simples, rápida e fácil. 
 
 ## Preview 📱
 
