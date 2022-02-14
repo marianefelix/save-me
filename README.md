@@ -46,7 +46,7 @@ Para utilizar o aplicativo, você pode clonar este repositório. Mas, antes diss
     - Android Studio
     - Flutter (Versão mais atual)
 
-### Clonar Repositório
+#### Clonar Repositório
 
 Com tudo instalado em sua máquina, clone o repositório através do comando abaixo:
 
@@ -62,7 +62,7 @@ Com tudo instalado em sua máquina, clone o repositório através do comando aba
   
 ```
 
-### Rodando o app
+#### Rodando o app
 
 Com tudo pronto, emule um dispositivo e execute o seguinte comando em seu terminal:
 
