@@ -2,6 +2,7 @@ import 'package:app/controllers/login_controller.dart';
 import 'package:app/storage/user_storage.dart';
 import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/home/home.dart';
+import 'package:app/ui/pages/favorites/favorites.dart';
 import 'package:app/ui/pages/registration/registration.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/Form/password_field.dart';
@@ -139,9 +140,7 @@ class _LoginState extends State<Login> {
                       });
                     },
                   ),
-
                   const SizedBox(height: 30),
-
                   PrimaryButton(
                     isLoading: _isLoading,
                     label: "Entrar",
@@ -149,35 +148,32 @@ class _LoginState extends State<Login> {
                       loginAction();
                     },
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Registration()
-                          ));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Registration()));
                         },
                         child: RichText(
                           text: const TextSpan(
                             text: 'Não tem uma conta? ',
                             style: TextStyle(
-                              color: CustomColors.grey,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w300,
-                              fontSize: 14
-                            ),
+                                color: CustomColors.grey,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.w300,
+                                fontSize: 14),
                             children: <TextSpan>[
                               TextSpan(
                                 text: 'Cadastre-se',
                                 style: TextStyle(
-                                  color: CustomColors.grey,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14
-                                ),
+                                    color: CustomColors.grey,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
                               ),
                             ],
                           ),
@@ -204,10 +200,7 @@ class _LoginState extends State<Login> {
     FocusScope.of(context).unfocus();
 
     if (!isFormValid()) {
-      CustomSnackBar.show(
-        context, 
-        _errorMessage
-      );
+      CustomSnackBar.show(context, _errorMessage);
     } else {
       login();
     }
@@ -279,13 +272,11 @@ class _LoginState extends State<Login> {
       final user = await _loginController.getUserInfos(token);
       appStore.setUser(user);
 
-
       await Navigator.pushReplacement(
-      context, MaterialPageRoute(builder: (context) => const Home()));
-     
+          context, MaterialPageRoute(builder: (context) => const Home()));
     } catch (error) {
       CustomSnackBar.show(
-        context, 
+        context,
         "Falha na autenticação. Usuário ou senha inválidos!",
       );
     } finally {

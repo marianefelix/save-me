@@ -16,7 +16,7 @@ class LinkRepository {
     final data = response.data as List;
 
     List<LinkModel> links = [];
-    
+
     for (var linkJson in data) {
       final LinkModel link = LinkModel.fromJson(linkJson);
       links.add(link);
@@ -30,7 +30,7 @@ class LinkRepository {
     _api.options.headers['Authorization'] = 'Bearer $token';
 
     final response = await _api.get(_url + '/count');
-    
+
     return response.data;
   }
 
@@ -39,8 +39,24 @@ class LinkRepository {
     _api.options.headers['Authorization'] = 'Bearer $token';
 
     final response = await _api.get(_url + '/favorites');
-    
+
     return response.data.length;
+  }
+
+  Future<List<LinkModel>> getFavoriteLinks() async {
+    final token = await UserStorage.getToken();
+    _api.options.headers['Authorization'] = 'Bearer $token';
+
+    final response = await _api.get(_url + '/favorites');
+    final data = response.data as List;
+
+    List<LinkModel> links = [];
+
+    for (var linkJson in data) {
+      final LinkModel link = LinkModel.fromJson(linkJson);
+      links.add(link);
+    }
+    return links;
   }
 
   Future createLink(Map<String, dynamic> params) async {
@@ -66,7 +82,7 @@ class LinkRepository {
     final token = await UserStorage.getToken();
     final deleteUrl = _url + '/' + id.toString();
     _api.options.headers['Authorization'] = 'Bearer $token';
-  
+
     final response = await _api.delete(deleteUrl);
 
     return response;
