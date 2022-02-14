@@ -40,11 +40,35 @@ saveMe é um aplicativo desenvolvido em Flutter que tem como funcionalidade prin
 
 ## Como usar 🤔
 
-- Para utilizar o aplicativo, você pode clonar este repositório. Mas, antes disso, você precisa ter em sua máquina os seguintes itens:
+Para utilizar o aplicativo, você pode clonar este repositório. Mas, antes disso, você precisa ter em sua máquina os seguintes itens:
 
     - Visual Studio Code
     - Android Studio
     - Flutter (Versão mais atual)
+
+### Clonar Repositório
+
+Com tudo instalado em sua máquina, clone o repositório através do comando abaixo:
+
+```bash
+  # Clonar o repositório
+  $ git clone https://github.com/marianefelix/save-me.git
+
+  # Entrar no diretório
+  $ cd app
+
+  # Instalar as dependências
+  $ flutter pub get
+  
+```
+
+### Rodando o app
+
+Com tudo pronto, emule um dispositivo e execute o seguinte comando em seu terminal:
+
+```bash
+$ flutter run
+```
 
 ## Licença 📝
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](https://github.com/marianefelix/save-me/blob/develop/LICENSE) para mais detalhes.
