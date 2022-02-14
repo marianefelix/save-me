@@ -1,37 +1,42 @@
-import 'package:app/controllers/home_controller.dart';
+import 'package:app/controllers/favorites_controller.dart';
 import 'package:app/models/category_model.dart';
 import 'package:app/stores/AppStore/app_store.dart';
 import 'package:app/ui/pages/category/category.dart';
+import 'package:app/ui/pages/favorites/components/Title/title.dart';
 import 'package:app/ui/pages/home/components/EmptyState/empty_state.dart';
-import 'package:app/ui/pages/home/components/List/list.dart';
-import 'package:app/ui/pages/home/components/Title/title.dart';
 import 'package:app/ui/utils/ScaffoldBase/scaffold_base.dart';
 import 'package:app/ui/utils/custom_colors.dart';
 import 'package:app/ui/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+import '../../../controllers/category_controller.dart';
+import '../../../models/link_model.dart';
+import '../category/components/LinkCard/link_card.dart';
+
+class Favorites extends StatefulWidget {
+  const Favorites({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _FavoritesState createState() => _FavoritesState();
 }
 
-class _HomeState extends State<Home> {
+class _FavoritesState extends State<Favorites> {
   TextEditingController searchController = TextEditingController();
-  final _homeController = HomeController();
+  final _favoritesController = FavoritesController();
+  final _categoryController = CategoryController();
 
-  bool _isGrid = true;
+  // bool _isGrid = true;
   bool _isSearchEmpty = true;
   bool _isLoading = true;
-  bool _categoryListIsEmpty = true;
+  bool _favoriteLinkListIsEmpty = true;
+  Map<int, LinkModel> _datas = {};
 
   List<CategoryModel> _searchCategoryResult = [];
 
   @override
   void initState() {
     super.initState();
-    fetchCategories();
+    fetchFavotires();
   }
 
   @override
@@ -44,10 +49,10 @@ class _HomeState extends State<Home> {
   void clearState() {
     searchController = TextEditingController();
 
-    _isGrid = true;
+    // _isGrid = true;
     _isSearchEmpty = true;
     _isLoading = true;
-    _categoryListIsEmpty = true;
+    _favoriteLinkListIsEmpty = true;
 
     _searchCategoryResult = [];
   }
@@ -62,18 +67,18 @@ class _HomeState extends State<Home> {
           height: MediaQuery.of(context).size.height,
           child: !_isSearchEmpty && _searchCategoryResult.isEmpty
               ? const EmptyState(
-                  message: "Nenhuma categoria encotrada.",
+                  message: "Nenhuma link encontrado.",
                   subtitle: "Tente pesquisar por outros valores.",
                   imgName: "not-found",
                 )
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: _buildHomeChildren(context),
+                  children: _buildFavoriteChildren(context),
                 )),
     );
   }
 
-  List<Widget> _buildHomeChildren(BuildContext context) {
+  List<Widget> _buildFavoriteChildren(BuildContext context) {
     List<Widget> children = [];
 
     if (_isLoading) {
@@ -89,58 +94,93 @@ class _HomeState extends State<Home> {
           ),
         ),
       ));
-    } else if (_categoryListIsEmpty) {
+    } else if (_favoriteLinkListIsEmpty) {
       children.add(const EmptyState(
-        message: "Você ainda não salvou nenhum link.",
+        message: "Você ainda não favoritou nenhum link.",
         imgName: "empty_state",
       ));
     } else {
       children.add(const SizedBox(height: 35));
-      children.add(const HomeTitle());
-      children.add(
-        Align(
-          alignment: Alignment.topRight,
-          child: IconButton(
-            onPressed: toggleListVisualization,
-            icon: Icon(_isGrid ? Icons.list : Icons.grid_view),
-            color: CustomColors.grey[500],
-          ),
-        ),
-      );
-      children.add(CustomList(
-        categories: _searchCategoryResult.isNotEmpty
-            ? _searchCategoryResult
-            : appStore.categories,
-        links: appStore.links,
-        isGrid: _isGrid,
-        cardOnTap: cardOnTap,
-      ));
+      children.add(const FavoritesTitle());
+      children.add(ListView.builder(
+          shrinkWrap: true,
+          padding: const EdgeInsets.only(top: 20, bottom: 20),
+          itemCount: appStore.favoritelinks.length,
+          itemBuilder: (context, index) {
+            return LinkCard(
+              link: appStore.favoritelinks[index],
+              isSelected: false,
+              onFavorite: onFavorite,
+            );
+          }));
+      // children.add(
+      //   Align(
+      //     alignment: Alignment.topRight,
+      //     child: IconButton(
+      //       onPressed: toggleListVisualization,
+      //       icon: Icon(_isGrid ? Icons.list : Icons.grid_view),
+      //       color: CustomColors.grey[500],
+      //     ),
+      //   ),
+      // );
+
     }
 
     return children;
   }
 
-  void toggleListVisualization() {
-    setState(() {
-      _isGrid = !_isGrid;
-    });
-  }
+  // void toggleListVisualization() {
+  //   setState(() {
+  //     _isGrid = !_isGrid;
+  //   });
+  // }
 
-  void fetchCategories() async {
+  void onFavorite(int linkId, bool value) async {
     try {
-      final categoriesResponse = await _homeController.fetchCategories();
-      final linksResponse = await _homeController.fetchLinks();
+      final params = {
+        "id": linkId,
+        "favorite": value,
+      };
 
-      appStore.setCategories([...categoriesResponse]);
-      appStore.setLinks([...linksResponse]);
+      await _categoryController.editLink(params);
+
+      final link = _datas[linkId];
+      link!.favorite = value;
 
       setState(() {
-        _categoryListIsEmpty = categoriesResponse.isEmpty;
+        _datas = {
+          ..._datas,
+          link.id: link,
+        };
+      });
+
+      CustomSnackBar.show(
+          context,
+          value
+              ? "Link adicionado aos favoritos com sucesso!"
+              : "Link removido dos favoritos com sucesso!");
+    } catch (error) {
+      CustomSnackBar.show(
+          context,
+          value
+              ? "Erro ao adicionar link aos favoritos! Tente novamente."
+              : "Erro ao remover link aos favoritos! Tente novamente.");
+    }
+  }
+
+  void fetchFavotires() async {
+    try {
+      final linksResponse = await _favoritesController.fetchLinks();
+
+      appStore.setFavoriteLinks([...linksResponse]);
+
+      setState(() {
+        _favoriteLinkListIsEmpty = linksResponse.isEmpty;
       });
     } catch (error) {
       CustomSnackBar.show(
         context,
-        "Erro ao recuperar categorias, por favor atualize a página.",
+        "Erro ao recuperar links favoritos, por favor atualize a página.",
         duration: 3000,
       );
     } finally {

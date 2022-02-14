@@ -11,6 +11,7 @@ abstract class _AppStore with Store {
   UserModel user = UserModel();
   List<CategoryModel> categories = ObservableList<CategoryModel>();
   List<LinkModel> links = ObservableList<LinkModel>();
+  List<LinkModel> favoritelinks = ObservableList<LinkModel>();
 
   @action
   void setUser(UserModel user) {
@@ -25,6 +26,11 @@ abstract class _AppStore with Store {
   @action
   void setLinks(List<LinkModel> links) {
     this.links = links;
+  }
+
+  @action
+  void setFavoriteLinks(List<LinkModel> favoritelinks) {
+    this.favoritelinks = favoritelinks;
   }
 }
 
